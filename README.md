@@ -22,7 +22,7 @@ This bash script automates the process of onboarding new users in Google Workspa
 
 ## Prerequisites
 
-1. Install [Google Apps Manager (GAM)](https://github.com/jay0lee/GAM) and set it up with the required permissions.
+1. Install [GAMADV-XTD3)](https://github.com/taers232c/GAMADV-XTD3) and set it up with the required permissions.
 
 2. Make sure to customize paths and file locations according to your environment.
 
