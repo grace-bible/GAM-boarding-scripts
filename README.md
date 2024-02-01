@@ -28,7 +28,7 @@ This bash script automates the process of onboarding new users in Google Workspa
 
 ## Usage
 
-1. Run the script in the terminal: `./provision_user.sh`
+1. Run the script in the terminal: `./onboard.sh`
 
 2. Follow the prompts to input the necessary information for the new user.
 

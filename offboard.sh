@@ -26,24 +26,38 @@ logloc=/Users/$accountName/GAMWork/logs
     echo
 
     $GAM3 info user $offboard_email_address
+
+    #Reset password
     echo "Generating random password..."
     $GAM3 update user $offboard_email_address password random gal off
     echo
+
+    #Deprovision
     echo "Deprovisioning..."
     $GAM3 user $offboard_email_address deprovision
     echo
+
+    #Forward emails
     echo "Forwarding emails..."
     $GAM3 user $offboard_email_address add forwardingaddress $receiving_email_address
     echo
+
+    #Configure forwarding to delete
     echo "Configuring email forwarding to delete..."
     $GAM3 user $offboard_email_address forward on $receiving_email_address delete
     echo
+
+    #Transfer files
     echo "Transferring Drive files..."
     $GAM3 user $offboard_email_address transfer drive $receiving_email_address
     echo
+
+    #Transfer calendar
     echo "Transferring Calendar..."
     $GAM3 calendar $offboard_email_address add owner $receiving_email_address
     echo
+
+    #Disable GAL directory
     echo "Disabling GAL..."
     $GAM3 update user $offboard_email_address gal false
     echo

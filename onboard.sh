@@ -48,14 +48,14 @@ logloc=/Users/$accountName/GAMWork/logs
     echo
     echo
 
-    #Create new user, generate random password, send notification to recovery email and hiring manager, set OU to "New users"
+    #Create new user, generate password, notify recovery email and hiring manager, set OU to "New users"
     echo
     echo "Creating new user..."
     $GAM3 create user $onboard_email_address firstname $onboard_first_name lastname $onboard_last_name org New\ users notify $recovery_email,$hr_email subject "[ACTION REQUIRED] Activate your #email# email" password "{{EXAMPLE_PASS_HERE}}" notifypassword "{{EMAILED_PASS_HINT}}" changepasswordatnextlogin
     echo
     echo
 
-    #Update org directory info for the new user
+    #Update org directory info
     echo "What type of employee is this?"
     echo " Admin"
     echo " Staff"
@@ -75,6 +75,7 @@ logloc=/Users/$accountName/GAMWork/logs
     read cost_center
     echo
     echo
+    #Add user to campus groups
     case $cost_center in
     AND)
         echo "Adding user to Anderson campus staff email Groups, Calendar, and Drive."
