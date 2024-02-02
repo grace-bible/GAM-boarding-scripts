@@ -66,12 +66,12 @@ logloc=/Users/$accountName/GAMWork/logs
     echo
 
     echo "What is the employee's reporting campus?"
-    echo "1 AND"
-    echo "2 SW"
-    echo "3 CRK"
-    echo "4 MT"
-    echo "5 SYS"
-    echo "6 KK"
+    echo " AND"
+    echo " SW"
+    echo " CRK"
+    echo " MT"
+    echo " SYS"
+    echo " KK"
     read cost_center
     echo
     echo
@@ -175,14 +175,15 @@ logloc=/Users/$accountName/GAMWork/logs
     #$GAM3 user $adminName add drivefile localfile $logloc teamdriveparentid 1Gb2n_u9KD5AMQ3EunO51pUE44SKTnoxm
     echo
     echo "Locally, you can find the log at: "
-    echo $logLoc
+    echo $logloc
     echo
+
+    $GAM3 info user $onboard_email_address
 
     echo "Google Workspace provisioning for $onboard_email_address complete"
     echo
     echo "Emailed credentials to $recovery_email and $hr_email"
     echo
-    $GAM3 info user $onboard_email_address
 
     #redirect stdout/stderr to a file
 ) 2>&1 | tee -a $logloc
