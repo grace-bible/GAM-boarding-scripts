@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 accountName=$(whoami)
 
@@ -6,7 +6,7 @@ accountName=$(whoami)
 NOW=$(date '+%F_%H:%M:%S')
 
 #Define location for logs as a variable $logloc
-logloc=/Users/$accountName/GAMWork/logs
+logloc="/Users/${accountName}/GAMWork/logs"
 
 (
     #Sets path of GAM
