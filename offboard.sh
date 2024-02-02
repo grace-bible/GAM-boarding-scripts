@@ -6,7 +6,7 @@ accountName=$(whoami)
 NOW=$(date '+%F_%H:%M:%S')
 
 #Define location for logs as a variable $logloc
-logloc="/Users/${accountName}/GAMWork/logs"
+logloc="/Users/$accountName/GAMWork/logs/$NOW.log"
 
 (
     #Sets path of GAM
@@ -62,6 +62,6 @@ logloc="/Users/${accountName}/GAMWork/logs"
     $GAM3 update user $offboard_email_address gal false
     echo
 
-    echo "Google Workspace deprovisioning for ${offboard_email_address} complete"
+    echo "Google Workspace deprovisioning for $offboard_email_address complete"
 
 ) 2>&1 | tee -a $logloc

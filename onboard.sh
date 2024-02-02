@@ -9,7 +9,7 @@ NOW=$(date '+%F_%H:%M:%S')
 sigFile=/Users/$accountName/repos/GAM-boarding-scripts/dependencies/signature.txt
 
 #Define location for logs as a variable $logloc
-logloc="/Users/${accountName}/GAMWork/logs"
+logloc="/Users/$accountName/GAMWork/logs/$NOW.log"
 
 (
     #Sets path of GAM

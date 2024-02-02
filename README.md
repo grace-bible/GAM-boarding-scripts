@@ -47,3 +47,5 @@ This bash script automates the process of onboarding new users in Google Workspa
 ## License
 
 This script is licensed under the [MIT License](LICENSE).
+
+Though almost entirely different (to the point that it's not a branch), this project was largelyl inspired by [deepanudaiyar's G-Suite repo](https://github.com/deepanudaiyar/G-Suite)
