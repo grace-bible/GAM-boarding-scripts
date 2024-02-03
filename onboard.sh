@@ -9,9 +9,15 @@ NOW=$(date '+%F')
 sigFile=/Users/$accountName/repos/GAM-boarding-scripts/dependencies/signature.txt
 
 #Define location for logs as a variable $logloc
-if [ ! -d "$logDir" ]; then
+logDir=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
+
+if [ -d "$logDir" ]; then
     echo "Logging to Google Drive File Stream via joshmckenna@grace-bible.org"
-    logloc=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam/$NOW.log
+    logloc=$logDir/$NOW.log
+    echo
+elif [ ! -d "/Users/$accountName/GAMWork/logs/" ]; then
+    echo "Setting up Logs directory"
+    mkdir $logDir
     echo
 else
     echo "Logging to $accountName GAMWork/logs directory"
