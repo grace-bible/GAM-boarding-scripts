@@ -56,15 +56,19 @@ fi
     echo "Generating random password..."
     ${GAM3} update user $offboard_user password random
     echo
-    echo "Hiding $username from the Global Address List (GAL)..."
+    echo "Hiding $offboard_user from the Global Address List (GAL)..."
     ${GAM3} update user $offboard_user gal off #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands
     echo
     echo "Erasing recovery options for $offboard_user..."
     ${GAM3} update user $offboard_user recoveryemail "" recoveryphone ""
     echo
+    echo "Setting $offboard_user end date to today..."
+    ${GAM3} update user $offboard_user Employment_History.End_dates multivalued $NOW #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
+    echo
     echo "Deprovisioning application passwords, backup verification codes, and access tokens..."
     echo "Disabling POP/IMAP access, signing out all devices, and turning off MFA..."
     ${GAM3} user $offboard_user deprovision popimap signout turnoff2sv #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Deprovision
+    ${GAM3} user $offboard_user update backupcodes
     echo
     echo
 
@@ -78,7 +82,8 @@ fi
     subject="No longer at Grace Bible Church"
     message="Thank you for contacting me. I am no longer working at $company. Please direct any future correspondence to $receiving_user."
     ${GAM3} user $offboard_user print forwardingaddresses | ${GAM3} csv - gam user "~User" delete forwardingaddress "~forwardingEmail"
-    ${GAM3} user $offboard_user forward true archive $receiving_user #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Forwarding
+    ${GAM3} user $offboard_user add forwardingaddress $receiving_user
+    ${GAM3} user $offboard_user forward on $receiving_user archive #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Forwarding
     echo
     echo "Configuring email autoreply..."
     startDate=$NOW
@@ -96,11 +101,11 @@ fi
     ${GAM3} user $offboard_user delete groups
     echo
     echo "Moving $username to Offboarding OU..."
-    ${GAM3} update user $username ou /Inactive
+    ${GAM3} update user $username org Inactive
     echo
     echo
     echo "Waiting for previous changes to take effect..."
-    sleep 30
+    sleep 10
     ${GAM3} update user $offboard_user suspended on
 
     echo "Google Workspace deprovisioning for $offboard_user complete"
