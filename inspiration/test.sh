@@ -9,35 +9,36 @@ parent_path=$(
 
 cd "$parent_path"
 
-accountName=$(whoami)
+accountName=joshmckenna
 
 #Define today's date and time as a variable $NOW
 NOW=$(date '+%F')
 
-#Define location for logs as a variable $logloc
-logDir=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
+#Define location for logs as a variable $logLocation
+logDirectory=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
 
-if [ -d "$logDir" ]; then
+if [ -d "$logDirectory" ]; then
     echo "Logging to Google Drive File Stream via joshmckenna@grace-bible.org"
-    logloc=$logDir/$NOW.log
+    logLocation=$logDirectory/$NOW.log
     echo
-elif [ ! -d "~/GAMWork/logs/" ]; then
+elif [ ! -d "/Users/$accountName/GAMWork/logs/" ]; then
     echo "Setting up Logs directory"
-    mkdir $logDir
-    echo "Logging to $accountName/GAMWork/logs directory"
-    logloc=~/GAMWork/logs/$NOW.log
+    mkdir $logDirectory
+    echo "Logging to /Users/$accountName/GAMWork/logs directory"
+    logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 else
-    echo "Logging to $accountName GAMWork/logs directory"
-    logloc=~/GAMWork/logs/$NOW.log
+    echo "Logging to /Users/$accountName/GAMWork/logs directory"
+    logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 fi
 
 (
     #Sets path of GAM
-    GAM3=~/bin/gamadv-xtd3/gam
-    echo "GAM3 command alias set to $GAM3"
+    GAM3="/Users/$accountName/bin/gamadv-xtd3/gam"
+    echo "GAM3 command alias set to ${GAM3}"
+    ${GAM3} info user testbundle@grace-bible.org
     echo
 
-) 2>&1 | tee -a "$logloc"
+) 2>&1 | tee -a "$logLocation"
 
 cd $INITIAL_WORKING_DIRECTORY
 

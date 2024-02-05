@@ -1,6 +1,15 @@
 #!/bin/bash
 
-accountName=$(whoami)
+INITIAL_WORKING_DIRECTORY=$(pwd)
+
+parent_path=$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd -P
+)
+
+cd "$parent_path"
+
+accountName=joshmckenna
 
 #Define today's date and time as a variable $NOW
 NOW=$(date '+%F')
@@ -8,26 +17,27 @@ NOW=$(date '+%F')
 #Make sure to change the path of your signature file below
 sigFile=/Users/$accountName/repos/GAM-boarding-scripts/dependencies/signature.txt
 
-#Define location for logs as a variable $logloc
-logDir=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
+#Define location for logs as a variable $logLocation
+logDirectory=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
 
-if [ -d "$logDir" ]; then
+if [ -d "$logDirectory" ]; then
     echo "Logging to Google Drive File Stream via joshmckenna@grace-bible.org"
-    logloc=$logDir/$NOW.log
+    logLocation=$logDirectory/$NOW.log
     echo
 elif [ ! -d "/Users/$accountName/GAMWork/logs/" ]; then
     echo "Setting up Logs directory"
-    mkdir $logDir
-    echo
+    mkdir $logDirectory
+    echo "Logging to $accountName GAMWork/logs directory"
+    logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 else
     echo "Logging to $accountName GAMWork/logs directory"
-    logloc=/Users/$accountName/GAMWork/logs/$NOW.log
+    logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 fi
 
 (
     #Sets path of GAM
     GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
-    echo "GAM3=$GAM3"
+    echo "GAM3 command alias set to $GAM3"
     echo
     echo
 
@@ -185,10 +195,10 @@ fi
     echo
     echo "User is provisioned in Google Workspace by $adminName at $NOW"
     #Make sure to change the folder id of your g-drive below
-    #$GAM3 user $adminName add drivefile localfile $logloc teamdriveparentid 1Gb2n_u9KD5AMQ3EunO51pUE44SKTnoxm
+    #$GAM3 user $adminName add drivefile localfile $logLocation teamdriveparentid 1Gb2n_u9KD5AMQ3EunO51pUE44SKTnoxm
     echo
     echo "Locally, you can find the log at: "
-    echo $logloc
+    echo $logLocation
     echo
 
     $GAM3 info user $onboard_email_address
@@ -199,4 +209,6 @@ fi
     echo
 
     #redirect stdout/stderr to a file
-) 2>&1 | tee -a "$logloc"
+) 2>&1 | tee -a "$logLocation"
+
+cd $INITIAL_WORKING_DIRECTORY

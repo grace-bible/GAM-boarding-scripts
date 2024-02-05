@@ -1,30 +1,40 @@
 #!/bin/bash
 
-accountName=$(whoami)
+INITIAL_WORKING_DIRECTORY=$(pwd)
+
+parent_path=$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd -P
+)
+
+cd "$parent_path"
+
+accountName=joshmckenna
 
 #Define today's date and time as a variable $NOW
 NOW=$(date '+%F')
 
-#Define location for logs as a variable $logloc
-logDir=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
+#Define location for logs as a variable $logLocation
+logDirectory=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
 
-if [ -d "$logDir" ]; then
+if [ -d "$logDirectory" ]; then
     echo "Logging to Google Drive File Stream via joshmckenna@grace-bible.org"
-    logloc=$logDir/$NOW.log
+    logLocation=$logDirectory/$NOW.log
     echo
 elif [ ! -d "/Users/$accountName/GAMWork/logs/" ]; then
     echo "Setting up Logs directory"
-    mkdir $logDir
-    echo
+    mkdir $logDirectory
+    echo "Logging to $accountName GAMWork/logs directory"
+    logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 else
     echo "Logging to $accountName GAMWork/logs directory"
-    logloc=/Users/$accountName/GAMWork/logs/$NOW.log
+    logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 fi
 
 (
     #Sets path of GAM
     GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
-    echo "GAM3=$GAM3"
+    echo "GAM3 command alias set to ${GAM3}"
     echo
 
     # Function to handle errors gracefully
@@ -58,9 +68,11 @@ fi
     set -- $1
     IFS="$oIFS"
     for i in "$@"; do
-        $GAM3 update group $i add $role user $username || error_exit "Failed to add user to group: $i"
+        ${GAM3} update group $i add $role user $username || error_exit "Failed to add user to group: $i"
         echo "Added $username to $i"
     done
     echo "Added to: $# group(s)!"
 
-) 2>&1 | tee -a "$logloc"
+) 2>&1 | tee -a "$logLocation"
+
+cd $INITIAL_WORKING_DIRECTORY
