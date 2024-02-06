@@ -14,9 +14,6 @@ accountName=joshmckenna
 #Define today's date and time as a variable $NOW
 NOW=$(date '+%F')
 
-#Make sure to change the path of your signature file below
-sigFile=/Users/$accountName/repos/GAM-boarding-scripts/dependencies/signature.txt
-
 #Define location for logs as a variable $logLocation
 logDirectory=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
 
@@ -27,12 +24,15 @@ if [ -d "$logDirectory" ]; then
 elif [ ! -d "/Users/$accountName/GAMWork/logs/" ]; then
     echo "Setting up Logs directory"
     mkdir $logDirectory
-    echo "Logging to $accountName GAMWork/logs directory"
+    echo "Logging to /Users/$accountName/GAMWork/logs directory"
     logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 else
-    echo "Logging to $accountName GAMWork/logs directory"
+    echo "Logging to /Users/$accountName/GAMWork/logs directory"
     logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 fi
+
+#Make sure to change the path of your signature file below
+sigFile=/Users/$accountName/repos/GAM-boarding-scripts/dependencies/signature.txt
 
 (
     #Sets path of GAM
