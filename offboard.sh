@@ -72,6 +72,9 @@ fi
     echo
     echo
 
+    #echo "Do you want to transfer emails, calendars, and drive files to another user? (Y/N)"
+    #read transfer_choice
+
     echo "Input the email address of the user to receive from $offboard_user, followed by [ENTER]"
     read receiving_user
     echo
@@ -100,8 +103,8 @@ fi
     echo "Removing from groups..."
     ${GAM3} user $offboard_user delete groups
     echo
-    echo "Moving $username to Offboarding OU..."
-    ${GAM3} update user $username org Inactive
+    echo "Moving $offboard_user to Offboarding OU..."
+    ${GAM3} update org Inactive move user $offboard_user
     echo
     echo
     echo "Waiting for previous changes to take effect..."
