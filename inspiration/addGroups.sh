@@ -24,10 +24,10 @@ if [ -d "$logDirectory" ]; then
 elif [ ! -d "/Users/$accountName/GAMWork/logs/" ]; then
     echo "Setting up Logs directory"
     mkdir $logDirectory
-    echo "Logging to $accountName GAMWork/logs directory"
+    echo "Logging to /Users/$accountName/GAMWork/logs directory"
     logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 else
-    echo "Logging to $accountName GAMWork/logs directory"
+    echo "Logging to /Users/$accountName/GAMWork/logs directory"
     logLocation=/Users/$accountName/GAMWork/logs/$NOW.log
 fi
 
