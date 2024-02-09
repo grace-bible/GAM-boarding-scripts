@@ -23,7 +23,7 @@ onboard_manager=janineford@grace-bible.org,joshmckenna@grace-bible.org
 TEMP_PASS=P@ssw0rdy
 
 #Check for arguments
-if [[ -n "$1" ]] && [[-n "$2" ]] && [[-n "$3" ]] && [[-n "$4" ]] && [[-n "$5" ]] && [[-n "$6" ]]; then
+if [[ $# -eq 7 ]]; then
     onboard_first_name="$1"
     onboard_last_name="$2"
     onboard_user="$3"
