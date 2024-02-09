@@ -79,7 +79,7 @@ set_endDate() {
     #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
 }
 
-deprovsion() {
+deprovision() {
     echo "Deprovisioning application passwords, backup verification codes, and access tokens..."
     echo "Disabling POP/IMAP access, signing out all devices, and turning off MFA..."
     ${GAM3} user $offboard_user deprovision popimap signout turnoff2sv
@@ -163,7 +163,7 @@ STEP_LIST=(
     "reset_password" "Generates a random password"
     "reset_recovery" "Erasing password recovery options"
     "set_endDate" "Sets the employee directory end date"
-    "deprovsion" "Clears application passwords, backup verification codes, and access tokens"
+    "deprovision" "Clears application passwords, backup verification codes, and access tokens"
     "remove_directory" "Removes employee from the Global Address List (GAL)"
     "forward_emails" "Forwarding emails, granting delegate access to manager"
     "set_autoreply" "Configures email autoreply"
@@ -208,7 +208,7 @@ fi
 #reset_password
 #reset_recovery
 #set_endDate
-#deprovsion
+#deprovision
 #remove_directory
 #forward_emails
 #set_autoreply
