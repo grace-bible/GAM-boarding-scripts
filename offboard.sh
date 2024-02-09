@@ -157,6 +157,11 @@ suspend() {
     ${GAM3} update user $offboard_user suspended on
 }
 
+cleanup_tmp_files() {
+    rm ./SharedDriveAccess.csv
+    rm ./DeleteSharedDriveAccess.txt
+}
+
 end_logger() {
     echo "Google Workspace boarding process complete"
     echo "========================================"
@@ -231,4 +236,5 @@ suspend
 end_logger
 
 #Return to the pre-script working directory
+cleanup_tmp_files
 cd $INITIAL_WORKING_DIRECTORY
