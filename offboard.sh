@@ -39,13 +39,15 @@ start_logger() {
     exec &> >(tee -a "$logFile")
     echo "========================================"
     echo "GAM3 command alias set to ${GAM3}"
+    ${GAM3} version
+    echo ""
 }
 
 get_info() {
     echo "Logging user's pre-offboarding info for audit..."
     ${GAM3} info user $offboard_user
     ${GAM3} user $offboard_user show forwards
-    echo
+    echo ""
 }
 
 unsuspend() {
@@ -171,6 +173,7 @@ STEP_LIST=(
     "transfer_drive" "Transfers Google Drive files"
     "transfer_calendar" "Transfers Google Calendars and events"
     "remove_groups" "Removes from all Google Groups"
+    "remove_drives" "Removes from all Shared Drives"
 )
 
 entry_options=()
