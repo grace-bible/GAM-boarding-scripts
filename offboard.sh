@@ -158,7 +158,7 @@ suspend() {
 }
 
 end_logger() {
-    echo "Google Workspace deprovisioning for $offboard_user complete"
+    echo "Google Workspace boarding process complete"
     echo "========================================"
 }
 
