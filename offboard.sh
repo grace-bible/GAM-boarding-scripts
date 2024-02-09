@@ -131,9 +131,10 @@ transfer_calendar() {
     echo ""
 }
 
-remove_drives() {
-    ${GAM3} redirect csv ./SharedDriveAccess.csv user $offboard_user shareddrives fields id,name
-    ${GAM3} redirect stdout ./DeleteSharedDriveAccess.txt multiprocess redirect stderr stdout csv ./SharedDriveAccess.csv gam delete drivefileacl ~id ~User
+remove_groups() {
+    echo "Removing from groups..."
+    ${GAM3} user $offboard_user delete groups
+    echo
 }
 
 set_org_unit() {
