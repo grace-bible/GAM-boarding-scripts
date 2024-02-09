@@ -18,6 +18,7 @@ logFile=$logDirectory/$NOW.log
 
 GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
 
+#Check for arguments
 if [[ -n "$1" ]] && [[-n "$2" ]]; then
     offboard_user="$1"
     receiving_user="$2"
