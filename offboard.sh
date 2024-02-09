@@ -19,7 +19,7 @@ logFile=$logDirectory/$NOW.log
 GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
 
 #Check for arguments
-if [[ -n "$1" ]] && [[-n "$2" ]]; then
+if [[ $# -eq 2 ]]; then
     offboard_user="$1"
     receiving_user="$2"
 else
@@ -44,19 +44,19 @@ start_logger() {
     echo ""
 }
 
-get_info() {
-    echo "Logging user's pre-offboarding info for audit..."
-    ${GAM3} info user $offboard_user
-    ${GAM3} user $offboard_user show forwards
-    echo ""
-}
-
 unsuspend() {
     echo "Unsuspending user account for offboarding..."
     ${GAM3} update user $offboard_user suspended off
     echo ""
     echo "Waiting for suspension to be removed..."
     sleep 10
+    echo ""
+}
+
+get_info() {
+    echo "Logging user's pre-offboarding info for audit..."
+    ${GAM3} info user $offboard_user
+    ${GAM3} user $offboard_user show forwards
     echo ""
 }
 
@@ -184,7 +184,7 @@ STEP_LIST=(
 
 entry_options=()
 entries_count=${#STEP_LIST[@]}
-whip_message="Choose the offboarding steps to run:"
+whip_message="Navigate with the TAB key, select with the SPACE key."
 
 for i in ${!STEP_LIST[@]}; do
     if [ $((i % 2)) == 0 ]; then
