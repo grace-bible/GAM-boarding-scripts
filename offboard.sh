@@ -157,6 +157,53 @@ endlogger() {
 start_logger
 unsuspend
 
+#Whiptail dialog UI
+STEP_LIST=(
+    "get_info" "Gets the user's pre-offboarding info for audit"
+    "reset_password" "Generates a random password"
+    "reset_recovery" "Erasing password recovery options"
+    "set_endDate" "Sets the employee directory end date"
+    "deprovsion" "Clears application passwords, backup verification codes, and access tokens"
+    "remove_directory" "Removes employee from the Global Address List (GAL)"
+    "forward_emails" "Forwarding emails, granting delegate access to manager"
+    "set_autoreply" "Configures email autoreply"
+    "transfer_drive" "Transfers Google Drive files"
+    "transfer_calendar" "Transfers Google Calendars and events"
+    "remove_groups" "Removes from all Google Groups"
+)
+
+entry_options=()
+entries_count=${#STEP_LIST[@]}
+whip_message="Choose the offboarding steps to run:"
+
+for i in ${!STEP_LIST[@]}; do
+    if [ $((i % 2)) == 0 ]; then
+        entry_options+=($(($i / 2)))
+        entry_options+=("${STEP_LIST[$(($i + 1))]}")
+        entry_options+=('OFF')
+    fi
+done
+
+SELECTED_STEPS_RAW=$(
+    whiptail \
+        --checklist \
+        --separate-output \
+        --title 'Offboarding' \
+        "$whip_message" \
+        40 80 \
+        "$entries_count" -- "${entry_options[@]}" \
+        3>&1 1>&2 2>&3
+)
+
+if [[ ! -z SELECTED_STEPS_RAW ]]; then
+    for STEP_FN_ID in ${SELECTED_STEPS_RAW[@]}; do
+        FN_NAME_ID=$(($STEP_FN_ID * 2))
+        STEP_FN_NAME="${STEP_LIST[$FN_NAME_ID]}"
+        echo "---Running ${STEP_FN_NAME}---"
+        $STEP_FN_NAME
+    done
+fi
+
 #get_info
 #reset_password
 #reset_recovery
