@@ -157,7 +157,7 @@ suspend() {
     ${GAM3} update user $offboard_user suspended on
 }
 
-endlogger() {
+end_logger() {
     echo "Google Workspace deprovisioning for $offboard_user complete"
     echo "========================================"
 }
@@ -228,7 +228,7 @@ fi
 #remove_drives
 set_org_unit
 suspend
-endlogger
+end_logger
 
 #Return to the pre-script working directory
 cd $INITIAL_WORKING_DIRECTORY
