@@ -139,6 +139,11 @@ remove_groups() {
     echo
 }
 
+remove_drives() {
+    ${GAM3} redirect csv ./SharedDriveAccess.csv multiprocess user $offboard_user print shareddrives fields id,name
+    ${GAM3} redirect stdout ./DeleteSharedDriveAccess.txt multiprocess redirect stderr stdout csv ./SharedDriveAccess.csv gam delete drivefileacl ~~id~~ ~~User~~
+}
+
 set_org_unit() {
     echo "Moving $offboard_user to offboarding OU..."
     ${GAM3} update org 'Inactive' move user $offboard_user
@@ -219,11 +224,10 @@ fi
 #transfer_drive
 #transfer_calendar
 #remove_groups
+#remove_drives
 set_org_unit
 suspend
 endlogger
 
 #Return to the pre-script working directory
 cd $INITIAL_WORKING_DIRECTORY
-
-#home is ~, current is ./, parent is ../
