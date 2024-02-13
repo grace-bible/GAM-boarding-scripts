@@ -13,19 +13,18 @@
 ### Collect employee professional info
 
 - [ ] Campus
-- [ ] Manager
-- [ ] Job title
 - [ ] Office location
-- [ ] Start date
-- [ ] Employment type
 - [ ] Expected work hours
+- [ ] Job title
+- [ ] Manager email
+- [ ] Start date
+- [ ] Employment type (status)
 
 ### Onboard the operational environment
 
 #### Groups for security and email:
 
 - [ ] Department(s)
-- [ ] Staff (employment status)
 - [ ] Role(s)
   - Fellows: Directors, First Year, Second Year, Third Year
   - Operations, Administrators, Supervisors, etc.
@@ -63,16 +62,18 @@
 
 ### Collect employee personal info
 
-- [ ] Personal email (to coordinate asset recovery)
-- [ ] Personal phone (to coordinate asset recovery)
+- [ ] Personal email and/or phone (to coordinate asset recovery)
 
 ### Collect employee professional info
 
-- [ ] Office location for asset recovery
+- [ ] Office location (for asset recovery)
 - [ ] End date
 
 #### Other
 
+- [ ] Email forwarding: manager, successor, or none
+- [ ] Drive transfer: manager, successor, Shared Drive, or none
+- [ ] Calendar transfer: manager, successor, or none
 - [ ] Deprovision door access codes, keys, security cameras
 - [ ] Deprovision software permissions:
   - Google Workspace
