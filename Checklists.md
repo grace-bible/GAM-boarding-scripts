@@ -43,7 +43,7 @@
 
 #### Mac
 
-- [ ] `$1,799.00` 14-inch MacBook Pro: Apple M3 chip with 8‑core CPU and 10‑core GPU, 512GB SSD - Space Gray
+- [ ] `$1,999.00` 14-inch MacBook Pro: Apple M3 chip with 8‑core CPU and 10‑core GPU, 16GB RAM 512GB SSD - Space Gray
 - [ ] `$237.00` AppleCare+ for 14‑inch MacBook Pro (M3)
 - [ ] `$80.00` MX ANYWHERE 3S
 - [ ] `$110.00` MX KEYS S
