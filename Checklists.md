@@ -2,6 +2,9 @@
 
 ## Onboarding
 
+> [!NOTE]
+> The [onboarding script](/onboard.sh) expects exactly eight (8) arguments at entry in the following order: `onboard_first_name`, `onboard_last_name`, `onboard_user`, `recovery_email`, `campus`, `job_title`, `manager_email_address`, and `birthday`. Any more (or fewer) arguments will fail over to a guided entry, which will prompt for each variable sequentially.
+
 ### Collect employee personal info
 
 - [ ] Legal name
@@ -60,6 +63,9 @@
 
 ## Offboarding
 
+> [!NOTE]
+> The [offboarding script](/offboard.sh) expects exactly two (2) arguments at entry in the following order: `offboard_user` and `receiving_user`. Any more (or fewer) arguments will fail over to a guided entry, which will prompt for each variable sequentially.
+
 ### Collect employee personal info
 
 - [ ] Personal email and/or phone (to coordinate asset recovery)
@@ -71,22 +77,28 @@
 
 #### Other
 
-- [ ] Email forwarding: manager, successor, or none
-- [ ] Drive transfer: manager, successor, Shared Drive, or none
-- [ ] Calendar transfer: manager, successor, or none
+- [ ] [Inbox transfer](https://support.google.com/a/answer/6351475): manager, successor, or none
+- [ ] [Email forwarding](https://support.google.com/a/answer/4524505): manager, successor, or none
+- [ ] [Drive transfer](https://support.google.com/drive/answer/2494892): manager, successor, Shared Drive, or none
+- [ ] [Calendar transfer](https://support.google.com/calendar/answer/78739): manager, successor, or none
 - [ ] Deprovision door access codes, keys, security cameras
-- [ ] Deprovision software permissions:
+- [ ] [Deprovision](https://support.google.com/a/answer/6329207) software permissions:
   - Google Workspace
   - Active Directory
   - CCB (Groups, Process Queues, Forms, Departments, etc.)
-  - Pushpay
-  - ShelbyNext
+  - Pushpay, ShelbyNext
   - Avigilon, enteliWEB
   - Adobe, Canva, Meta (Facebook, Instagram, etc.), MailChimp, Flickr
   - Slack
   - Planning Center, Resi, Bluebolt, Multitracks, Soundtrack Your Brand, Bitwarden
   - Notion, Tally, GitHub, n8n, Meraki
+- [ ] Suspend or delete the user account[^1]
+
+> [!WARNING]
+> Make _sure_ you need to _delete_ a user before doing so!
 
 ### Reclaim issued assets
 
 - [ ] Computer, keyboard, mouse, monitor
+
+[^1]: By suspending a user at offboarding instead of deleting them, we avoid the irreversible action [until we can confidently proceed](https://support.google.com/a/answer/9048836).
