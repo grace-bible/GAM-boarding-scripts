@@ -23,7 +23,7 @@ onboard_manager=janineford@grace-bible.org,joshmckenna@grace-bible.org
 TEMP_PASS=P@ssw0rdy
 
 #Check for arguments
-if [[ $# -eq 7 ]]; then
+if [[ $# -eq 8 ]]; then
     onboard_first_name="$1"
     onboard_last_name="$2"
     onboard_user="$3"
@@ -31,31 +31,29 @@ if [[ $# -eq 7 ]]; then
     campus="$5"
     job_title="$6"
     manager_email_address="$7"
+    birthday="$8"
 else
     echo "You ran the script without adequate arguments..."
     echo ""
-    echo "Input the FIRST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]"
-    read onboard_first_name
+    read -p "Input the FIRST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_first_name
     echo ""
     echo ""
-    echo "Input the LAST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]"
-    read onboard_last_name
+    read -p "Input the LAST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_last_name
     echo ""
     echo ""
-    echo "Input the PERSONAL RECOVERY EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]"
-    read recovery_email
+    read -p "Input the PERSONAL RECOVERY EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]" recovery_email
     echo ""
     echo ""
-    echo "Input the WORK EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]"
-    read onboard_user
+    read -p "Input the WORK EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_user
     echo ""
     echo ""
-    echo "Input the employee's JOB TITLE, followed by [ENTER]"
-    read job_title
+    read -p "Input the employee's JOB TITLE, followed by [ENTER]" job_title
     echo ""
     echo ""
-    echo "Input the email address of the new user's MANAGER, followed by [ENTER]"
-    read manager_email_address
+    read -p "Input the email address of the new user's MANAGER, followed by [ENTER]" manager_email_address
+    echo ""
+    echo ""
+    read -p "Input the employee's BIRTHDAY (YYYY-MM-DD), followed by [ENTER]" birthday
     echo ""
     echo ""
 fi
@@ -104,6 +102,8 @@ create_user() {
     ${GAM3} create user $onboard_user firstname $onboard_first_name lastname $onboard_last_name org New\ users notify $recovery_email,$onboard_manager subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin
     ${GAM3} update user $onboard_user Employment_History.Start_dates multivalued $NOW
     #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
+    ${GAM3} calendar $onboard_user addevent attendee $birthday_calendar start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent
+    #https://github.com/GAM-team/GAM/wiki/Command-Reference:-Calendars#gam-who-add--update-calendar-calendar-email
     echo ""
     echo ""
 }
