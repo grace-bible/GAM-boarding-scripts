@@ -63,9 +63,12 @@ This bash script automates the process of onboarding new users in Google Workspa
 
 4. Logs are saved locally and uploaded to a specified Team Drive folder.
 
-<details>
+# IT boarding checklists
 
-<summary>Click here for the complete detailed <strong>onboarding checklist</strong></summary>
+## Detailed onboarding checklist
+
+> [!NOTE]
+> The [onboarding script](/onboard.sh) expects exactly eight (8) arguments at entry in the following order: `onboard_first_name`, `onboard_last_name`, `onboard_user`, `recovery_email`, `campus`, `job_title`, `manager_email_address`, and `birthday`. Any more (or fewer) arguments will fail over to a guided entry, which will prompt for each variable sequentially.
 
 ### Collect employee personal info
 
@@ -122,13 +125,11 @@ This bash script automates the process of onboarding new users in Google Workspa
 - [ ] `$110.00` MX KEYS S
 - [ ] `$280.00` ViewSonic 27 Inch 1440p IPS Monitor with 65W USB
 - [ ] `$70.00` Dell Thunderbolt Dock - WD22TB4
-</details>
+
+## Detailed offboarding checklist
 
 > [!NOTE]
-> The [onboarding script](/onboard.sh) expects exactly eight (8) arguments at entry in the following order: `onboard_first_name`, `onboard_last_name`, `onboard_user`, `recovery_email`, `campus`, `job_title`, `manager_email_address`, and `birthday`. Any more (or fewer) arguments will fail over to a guided entry, which will prompt for each variable sequentially.
-
-<details>
-<summary>Click here for the complete detailed <strong>offboarding checklist</strong></summary>
+> The [offboarding script](/offboard.sh) expects exactly two (2) arguments at entry in the following order: `offboard_user` and `receiving_user`. Any more (or fewer) arguments will fail over to a guided entry, which will prompt for each variable sequentially.
 
 ### Collect employee personal info
 
@@ -158,19 +159,14 @@ This bash script automates the process of onboarding new users in Google Workspa
   - Notion, Tally, GitHub, n8n, Meraki
 - [ ] Suspend or delete the user account[^1]
 
+> [!WARNING]
+> Make _sure_ you need to _delete_ a user before doing so!
+
 ### Reclaim issued assets
 
 - [ ] Computer, keyboard, mouse, monitor
 
 [^1]: By suspending a user at offboarding instead of deleting them, we avoid the irreversible action [until we can confidently proceed](https://support.google.com/a/answer/9048836).
-
-</details>
-
-> [!NOTE]
-> The [offboarding script](/offboard.sh) expects exactly two (2) arguments at entry in the following order: `offboard_user` and `receiving_user`. Any more (or fewer) arguments will fail over to a guided entry, which will prompt for each variable sequentially.
-
-> [!WARNING]
-> Make _sure_ you need to _delete_ a user before doing so!
 
 ## License
 
