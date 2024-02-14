@@ -2,23 +2,22 @@
 
 This bash script automates the process of onboarding new users in Google Workspace. It uses the [Google Apps Manager (GAMADV-XTD3)](https://github.com/taers232c/GAMADV-XTD3) command-line tool to interact with Google Workspace APIs.
 
+> [!CAUTION]
+> Ensure that sensitive information, such as passwords, is handled securely! Be careful publishing real passwords (even temporary ones) in this repo, and only disable `changepasswordatnextlogin` in [onboard.sh](/onboard.sh) if you know what you're doing.
+
 ## Features
 
-- **User Input Interaction:** The script prompts the administrator to input essential details for the new user, such as first name, last name, recovery email, HR email, etc.
+- **Interactive shell input:** The script prompts the administrator to input essential details for a new user, such as first name, last name, recovery email, manager, etc.
 
-- **User Creation:** Creates a new user in Google Workspace with a randomly generated password. Sends notifications to the recovery email and HR email. The user is required to change the password at the next login.
+- **Log executed functions for audit:** Logs the provisioning process and uploads logs to a specified folder for audit and reference.
 
-- **Organizational Unit (OU) Assignment:** Sets the organizational unit for the new user to "New users."
+- **Create new users:** Creates a new user in Google Workspace with a randomly generated password. Sends notifications to the recovery email and manager email. The user is required to change the password at the next login. Sets the organizational unit (OU) for the new user to `New users` until MFA can be configured at the first IT onboard meeting.
 
-- **Group Memberships:** Adds the new user to campus-specific staff email groups, calendar, and drive based on their reporting campus.
+- **Updates org directory information:** Updates organizational directory information for the new user, including employee type, campus, department, and job title.
 
-- **Org Directory Information Update:** Updates organizational directory information for the new user, including employee type, reporting campus, department, and job title.
+- **Setup email signature:** Configures the email signature for the new user using [a predefined template](/dependencies/signature.txt).
 
-- **Email Signature Setup:** Configures the email signature for the new user using a predefined template.
-
-- **Admin Verification:** Validates the admin's email address and downloads the new hire tracker sheet from Google Drive.
-
-- **Logs and Audit:** Logs the provisioning process and uploads logs to an IT subcommittee Team Drive folder for audit and reference.
+- **Add to security and mailing Groups:** Adds the new user to campus-specific staff email groups, role-based permission groups, team-based functional groups, calendars, and drives based on the campus and department(s).
 
 ## Prerequisites
 
@@ -28,21 +27,19 @@ This bash script automates the process of onboarding new users in Google Workspa
 
 ## Usage
 
-1. Run the script in the terminal: `./onboard.sh`
+> [!TIP]
+> Both the [onboarding script](/onboard.sh) and the [offboarding script](/offboard.sh) will run with CLI arguments _or_ with prompted input. If an unexpected number of arguments are received, the script will proceed with the guided boarding process. _Remember to customize the scripts according to your organization's specific needs!_
+
+1. Run the script in the terminal:
+
+   - `bash ./onboard.sh` runs the [guided onboarding process](/onboard.sh)
+   - `bash ./offboard.sh` runs the [guided offboarding process](/offboard.sh)
 
 2. Follow the prompts to input the necessary information for the new user.
 
 3. The script will create the user, update group memberships, set up the email signature, and log the process.
 
-4. Verify the admin's email address for additional tasks.
-
-5. Logs are saved locally and uploaded to a specified Team Drive folder.
-
-## Notes
-
-- Ensure that sensitive information, such as passwords, is handled securely.
-
-- Customize the script according to your organization's specific needs.
+4. Logs are saved locally and uploaded to a specified Team Drive folder.
 
 ## License
 
