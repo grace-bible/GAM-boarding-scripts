@@ -11,7 +11,7 @@ This bash script automates the process of onboarding new users in Google Workspa
 
 - **Log executed functions for audit:** Logs the provisioning process and uploads logs to a specified folder for audit and reference.
 
-### Onboarding
+### Onboarding features
 
 - **Create new users:** Creates a new user in Google Workspace with a randomly generated password. Sends notifications to the recovery email and manager email. The user is required to change the password at the next login. Sets the organizational unit (OU) for the new user to `New users` until MFA can be configured at the first IT onboard meeting.
 
@@ -21,7 +21,7 @@ This bash script automates the process of onboarding new users in Google Workspa
 
 - **Add to security and mailing Groups:** Adds the new user to campus-specific staff email groups, role-based permission groups, team-based functional groups, calendars, and drives based on the campus and department(s).
 
-### Offboarding
+### Offboarding features
 
 - **Deprovisions user access:** Resets the user password, erases password recovery and multi-factor authentication methods, and deprovisions all `popimap` and `backupcodes`.
 
