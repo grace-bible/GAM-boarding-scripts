@@ -18,11 +18,13 @@ logFile=$logDirectory/$NOW.log
 
 GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
 
+#https://github.com/taers232c/GAMADV-XTD3/wiki/Groups
+
 #Check for arguments
 if [[ $# -eq 3 ]]; then
     groups="$1"
     onboard_user="$2"
-    role="$3"
+    permission="$3"
 else
     echo "Please enter all groups separated by commas and without any spaces."
     echo "(e.g. group@domain.com,people@domain.com,test@domain.com), followed by [ENTER]"
@@ -62,6 +64,10 @@ end_logger() {
 #Start the global logger, begin functions
 start_logger
 
+echo "--------------------BEFORE--------------------"
+${GAM3} user ${onboard_user} show groups
+echo "--------------------BEFORE--------------------"
+
 while true; do
     validate_email $onboard_user && break
     echo "Invalid email address. Please try again."
@@ -75,10 +81,14 @@ IFS=,
 set -- $1
 IFS="$oIFS"
 for i in "$@"; do
-    ${GAM3} update group $i add $role user $onboard_user || error_exit "Failed to add user to group: $i"
+    ${GAM3} update group $i add ${permission} user ${onboard_user} || error_exit "Failed to add user to group: $i"
     echo "Added $onboard_user to $i"
 done
 echo "Added to: $# group(s)!"
+
+echo "--------------------AFTER--------------------"
+${GAM3} user ${onboard_user} show groups
+echo "--------------------AFTER--------------------"
 
 end_logger
 
