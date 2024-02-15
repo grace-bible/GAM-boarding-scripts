@@ -169,6 +169,36 @@ end_logger() {
     echo "========================================"
 }
 
+help() {
+    echo "This script automates the process of onboarding new users in Google Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool to interact with Google Workspace APIs."
+    echo
+    echo "Syntax: offboard [-h|V] []"
+    echo "options:"
+    echo "h                 Print this Help."
+    echo "V                 Print software version and exit."
+    echo "arguments:"
+    echo "offboard_user     User email for the offboarding user"
+    echo "receiving_user    User email for the receiving user of any transfers"
+    echo
+}
+
+while getopts ":h" option; do
+    case $option in
+    hH) # display help
+        help
+        exit
+        ;;
+    V) # display GAM version
+        ${GAM3} version
+        exit
+        ;;
+    \?) # incorrect option
+        echo "Error: invalid option"
+        exit
+        ;;
+    esac
+done
+
 #Start the global logger, begin functions
 start_logger
 unsuspend
