@@ -21,6 +21,7 @@ GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
 sigFile=/Users/joshmckenna/repos/GAM-boarding-scripts/dependencies/signature.txt
 onboard_manager=janineford@grace-bible.org,joshmckenna@grace-bible.org
 TEMP_PASS=P@ssw0rdy
+birthday_calendar=grace-bible.org_2lncaimlf8ua413n1v7pkmere4@group.calendar.google.com
 
 #Check for arguments
 if [[ $# -eq 8 ]]; then
@@ -102,7 +103,7 @@ create_user() {
     ${GAM3} create user $onboard_user firstname $onboard_first_name lastname $onboard_last_name org New\ users notify $recovery_email,$onboard_manager subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin
     ${GAM3} update user $onboard_user Employment_History.Start_dates multivalued $NOW
     #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
-    ${GAM3} calendar $onboard_user addevent attendee $birthday_calendar start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent
+    ${GAM3} calendar $onboard_user addevent attendee ${birthday_calendar} start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent
     #https://github.com/GAM-team/GAM/wiki/Command-Reference:-Calendars#gam-who-add--update-calendar-calendar-email
     echo ""
     echo ""
