@@ -23,52 +23,6 @@ onboard_manager=janineford@grace-bible.org,joshmckenna@grace-bible.org
 TEMP_PASS=P@ssw0rdy
 birthday_calendar=grace-bible.org_2lncaimlf8ua413n1v7pkmere4@group.calendar.google.com
 
-#Check for arguments
-if [[ $# -eq 8 ]]; then
-    onboard_first_name="$1"
-    onboard_last_name="$2"
-    onboard_user="$3"
-    recovery_email="$4"
-    campus="$5"
-    job_title="$6"
-    manager_email_address="$7"
-    birthday="$8"
-else
-    echo "You ran the script without adequate arguments..."
-    echo ""
-    read -p "Input the FIRST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_first_name
-    echo ""
-    echo ""
-    read -p "Input the LAST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_last_name
-    echo ""
-    echo ""
-    read -p "Input the PERSONAL RECOVERY EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]" recovery_email
-    echo ""
-    echo ""
-    read -p "Input the WORK EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_user
-    echo ""
-    echo ""
-    read -p "Input the employee's JOB TITLE, followed by [ENTER]" job_title
-    echo ""
-    echo ""
-    read -p "Input the email address of the new user's MANAGER, followed by [ENTER]" manager_email_address
-    echo ""
-    echo ""
-    read -p "Input the employee's BIRTHDAY (YYYY-MM-DD), followed by [ENTER]" birthday
-    echo ""
-    echo ""
-fi
-
-confirm_inputs() {
-    echo "Employee: ${onboard_first_name} ${onboard_first_name} ${onboard_user}"
-    echo "Job title: ${job_title}"
-    echo "Manager: ${manager_email_address}"
-    wait 2
-
-    read -p "Press any key to continue... " -n1 -s
-    echo ""
-}
-
 #Define available functions for the Whiptail menu
 start_logger() {
     exec &> >(tee -a "$logFile")
@@ -170,6 +124,85 @@ end_logger() {
     echo ""
     echo "========================================"
 }
+
+help_function() {
+    echo "This script automates the process of onboarding new users in Google Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool to interact with Google Workspace APIs."
+    echo
+    echo "Syntax: onboard [-h] [<onboard_first_name> <onboard_last_name> <recovery_email> <onboard_user> <job_title> <manager_email_address> <birthday>]"
+    echo
+    echo "options:"
+    echo "  h                       Print this help."
+    echo "arguments:"
+    echo "  onboard_first_name      User first name (string)"
+    echo "  onboard_last_name       User last name (string)"
+    echo "  recovery_email          Personal email for the onboarding user (email@domain.com)"
+    echo "  onboard_user            User new domain email (user@company.com)"
+    echo "  job_title               User official job title, for use in signature (string)"
+    echo "  manager_email_address   User manager email (manager@company.com)"
+    echo "  birthday                User birthday (YYYY-MM-DD) for company birthdays calendar"
+    echo
+}
+
+while getopts :h option; do
+    case $option in
+    [h])
+        help_function
+        exit
+        ;;
+    \?)
+        echo "Error: invalid option"
+        exit
+        ;;
+    esac
+done
+
+#Check for arguments
+if [[ $# -eq 8 ]]; then
+    onboard_first_name="$1"
+    onboard_last_name="$2"
+    onboard_user="$3"
+    recovery_email="$4"
+    campus="$5"
+    job_title="$6"
+    manager_email_address="$7"
+    birthday="$8"
+else
+    echo "You ran the script without adequate arguments..."
+    echo ""
+    read -p "Input the FIRST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_first_name
+    echo ""
+    echo ""
+    read -p "Input the LAST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_last_name
+    echo ""
+    echo ""
+    read -p "Input the PERSONAL RECOVERY EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]" recovery_email
+    echo ""
+    echo ""
+    read -p "Input the WORK EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_user
+    echo ""
+    echo ""
+    read -p "Input the employee's JOB TITLE, followed by [ENTER]" job_title
+    echo ""
+    echo ""
+    read -p "Input the email address of the new user's MANAGER, followed by [ENTER]" manager_email_address
+    echo ""
+    echo ""
+    read -p "Input the employee's BIRTHDAY (YYYY-MM-DD), followed by [ENTER]" birthday
+    echo ""
+    echo ""
+fi
+
+confirm_inputs() {
+    echo "Employee: ${onboard_first_name} ${onboard_first_name} ${onboard_user}"
+    echo "Job title: ${job_title}"
+    echo "Manager: ${manager_email_address}"
+    wait 2
+
+    read -p "Press any key to continue... " -n1 -s
+    echo ""
+}
+
+confirm_inputs
 
 start_logger
 set_password
