@@ -3,7 +3,7 @@
 This bash script automates the process of onboarding new users in Google Workspace. It uses the [Google Apps Manager (GAMADV-XTD3)](https://github.com/taers232c/GAMADV-XTD3) command-line tool to interact with Google Workspace APIs.
 
 > [!CAUTION]
-> Ensure that sensitive information, such as passwords, is handled securely! Be careful publishing real passwords (even temporary ones) in this repo, and only disable `changepasswordatnextlogin` in [onboard.sh](/onboard.sh) if you know what you're doing.
+> Ensure that sensitive information, such as passwords, is handled securely. Be careful publishing real passwords (even temporary ones) in a repo, and only disable `changepasswordatnextlogin` in [onboard.sh](/onboard.sh) if you know what you're doing.
 
 ## Features
 
