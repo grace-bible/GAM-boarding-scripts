@@ -20,23 +20,6 @@ logFile=$logDirectory/$NOW.log
 
 GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
 
-#Check for arguments
-if [[ $# -eq 2 ]]; then
-    offboard_user="$1"
-    receiving_user="$2"
-else
-    echo "You ran the script without from and to emails!"
-    echo ""
-    echo "Input the email address of the user to offboard from Google Workspace, followed by [ENTER]"
-    read offboard_user
-    echo ""
-    echo ""
-    echo "Input the email address of the user to receive from $offboard_user, followed by [ENTER]"
-    read receiving_user
-    echo ""
-    echo ""
-fi
-
 #Define available functions for the Whiptail menu
 start_logger() {
     exec &> >(tee -a "$logFile")
@@ -169,35 +152,57 @@ end_logger() {
     echo "========================================"
 }
 
-help() {
+help_function() {
     echo "This script automates the process of onboarding new users in Google Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool to interact with Google Workspace APIs."
     echo
-    echo "Syntax: offboard [-h|V] []"
+    echo "Syntax: offboard [-h] [<offboard_user> <receiving_user>]"
+    echo
     echo "options:"
-    echo "h                 Print this Help."
-    echo "V                 Print software version and exit."
+    echo "  h                 Print this help."
     echo "arguments:"
-    echo "offboard_user     User email for the offboarding user"
-    echo "receiving_user    User email for the receiving user of any transfers"
+    echo "  offboard_user     User email for the offboarding user"
+    echo "  receiving_user    User email for the receiving user of any transfers"
     echo
 }
 
-while getopts ":h" option; do
+while getopts :h option; do
     case $option in
-    hH) # display help
-        help
+    [h])
+        help_function
         exit
         ;;
-    V) # display GAM version
-        ${GAM3} version
-        exit
-        ;;
-    \?) # incorrect option
+    \?)
         echo "Error: invalid option"
         exit
         ;;
     esac
 done
+
+#Check for arguments
+if [[ $# -eq 2 ]]; then
+    offboard_user="$1"
+    receiving_user="$2"
+else
+    echo "You ran the script without from and to emails!"
+    echo ""
+    read -p "Input the email address of the user to offboard from Google Workspace, followed by [ENTER]   " offboard_user
+    echo ""
+    echo ""
+    read -p "Input the email address of the user to receive from $offboard_user, followed by [ENTER]   " receiving_user
+    echo ""
+    echo ""
+fi
+
+confirm_inputs() {
+    echo "Employee to offboard: ${offboard_user}"
+    echo "Employee to receive transfers: ${receiving_user}"
+    wait 2
+
+    read -p "Press any key to continue... " -n1 -s
+    echo ""
+}
+
+confirm_inputs
 
 #Start the global logger, begin functions
 start_logger
