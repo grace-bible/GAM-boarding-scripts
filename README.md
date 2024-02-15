@@ -49,8 +49,7 @@ This bash script automates the process of onboarding new users in Google Workspa
 
 ## Usage
 
-> [!TIP]
-> **Both the [onboarding script](/onboard.sh) and the [offboarding script](/offboard.sh) will run with either CLI arguments _or_ with user prompted input.** If an unexpected number of arguments are received, the script will proceed with the guided boarding process. _Remember to customize the scripts according to your organization's specific needs!_
+> [!TIP] > **Both the [onboarding script](/onboard.sh) and the [offboarding script](/offboard.sh) will run with either CLI arguments _or_ with user prompted input.** If an unexpected number of arguments are received, the script will proceed with the guided boarding process. _Remember to customize the scripts according to your organization's specific needs!_
 
 1. Run the script in the terminal:
 
@@ -157,16 +156,14 @@ This bash script automates the process of onboarding new users in Google Workspa
   - Slack
   - Planning Center, Resi, Bluebolt, Multitracks, Soundtrack Your Brand, Bitwarden
   - Notion, Tally, GitHub, n8n, Meraki
-- [ ] Suspend or delete the user account[^1]
+- [ ] Suspend or delete the user account
 
 > [!WARNING]
-> Make _sure_ you need to _delete_ a user before doing so!
+> Make _sure_ you need to _delete_ a user before doing so! By suspending a user at offboarding instead of deleting them, we avoid the irreversible action [until we can confidently proceed](https://support.google.com/a/answer/9048836).
 
 ### Reclaim issued assets
 
 - [ ] Computer, keyboard, mouse, monitor
-
-[^1]: By suspending a user at offboarding instead of deleting them, we avoid the irreversible action [until we can confidently proceed](https://support.google.com/a/answer/9048836).
 
 ## License
 
