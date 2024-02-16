@@ -1,6 +1,6 @@
 # Google Workspace User Provisioning and Deprovisioning Scripts
 
-This collection of bash scripts automate the process of onboarding new users in Google Workspace. It uses the [Google Apps Manager (GAMADV-XTD3)](https://github.com/taers232c/GAMADV-XTD3) command-line tool to interact with Google Workspace APIs.
+This collection of bash scripts automate the process of onboarding new users in Google Workspace. It uses the [Google Apps Manager (GAMADV-XTD3)](https://github.com/taers232c/GAMADV-XTD3) command-line tool to interact with Google Workspace APIs.[^1]
 
 > [!CAUTION]
 > Ensure that sensitive information, such as passwords, is handled securely. Be careful publishing real passwords (even temporary ones) in a repo, and only disable `changepasswordatnextlogin` in [onboard.sh](/onboard.sh) if you know what you're doing.
@@ -167,6 +167,6 @@ This collection of bash scripts automate the process of onboarding new users in 
 
 ## License
 
-This script is licensed under the [MIT License](LICENSE).
+This script is licensed under the [MIT License](/LICENSE.md).
 
-Though almost entirely different (to the point that it's not a branch), this project was largelyl inspired by [deepanudaiyar's G-Suite repo](https://github.com/deepanudaiyar/G-Suite)
+[^1]Though almost entirely different (to the point that it's not a branch), this project was largely inspired by [deepanudaiyar's G-Suite repo](https://github.com/deepanudaiyar/G-Suite)
