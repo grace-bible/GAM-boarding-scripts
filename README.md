@@ -169,4 +169,4 @@ This collection of bash scripts automate the process of onboarding new users in 
 
 This script is licensed under the [MIT License](/LICENSE.md).
 
-[^1]Though almost entirely different (to the point that it's not a branch), this project was largely inspired by [deepanudaiyar's G-Suite repo](https://github.com/deepanudaiyar/G-Suite)
+[^1]: Though almost entirely different (to the point that it's not a branch), this project was largely inspired by [deepanudaiyar's G-Suite repo](https://github.com/deepanudaiyar/G-Suite)
