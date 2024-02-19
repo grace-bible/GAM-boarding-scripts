@@ -210,18 +210,18 @@ unsuspend
 
 #Whiptail dialog UI
 STEP_LIST=(
-    "get_info" "Gets the user's pre-offboarding info for audit"
-    "reset_password" "Generates a random password"
-    "reset_recovery" "Erasing password recovery options"
-    "set_endDate" "Sets the employee directory end date"
-    "deprovision" "Clears application passwords, backup verification codes, and access tokens"
-    "remove_directory" "Removes employee from the Global Address List (GAL)"
-    "forward_emails" "Forwarding emails, granting delegate access to manager"
-    "set_autoreply" "Configures email autoreply"
-    "transfer_drive" "Transfers Google Drive files"
-    "transfer_calendar" "Transfers Google Calendars and events"
-    "remove_groups" "Removes from all Google Groups"
-    "remove_drives" "Removes from all Shared Drives"
+    "get_info" "Get user pre-offboarding info for audit"
+    "reset_password" "Generate a random password"
+    "reset_recovery" "Erase password recovery options"
+    "set_endDate" "Set employee end date in directory"
+    "deprovision" "Clear app passwords, backup codes, and access tokens"
+    "remove_directory" "Remove user from Global Address List (GAL)"
+    "forward_emails" "Forward emails, grant delegate access recipient"
+    "set_autoreply" "Configure email autoreply"
+    "transfer_drive" "Transfer Google Drive files"
+    "transfer_calendar" "Transfer Google Calendars and events"
+    "remove_groups" "Remove from all Google Groups"
+    "remove_drives" "Remove from all Shared Drives"
 )
 
 entry_options=()
