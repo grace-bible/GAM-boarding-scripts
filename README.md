@@ -49,7 +49,8 @@ This collection of bash scripts automate the process of onboarding new users in 
 
 ## Usage
 
-> [!TIP] > **Both the [onboarding script](/onboard.sh) and the [offboarding script](/offboard.sh) will run with either CLI arguments _or_ with user prompted input.** If an unexpected number of arguments are received, the script will proceed with the guided boarding process. _Remember to customize the scripts according to your organization's specific needs!_
+> [!TIP] 
+> **Both the [onboarding script](/onboard.sh) and the [offboarding script](/offboard.sh) will run with either CLI arguments _or_ with user prompted input.** If an unexpected number of arguments are received, the script will proceed with the guided boarding process. _Remember to customize the scripts according to your organization's specific needs!_
 
 1. Run the script in the terminal:
 
