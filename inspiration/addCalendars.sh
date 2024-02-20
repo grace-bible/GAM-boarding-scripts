@@ -76,7 +76,7 @@ while true; do
     echo "What is the permission level for ${onboard_user} on these calendars?"
     read -p "editor | freebusy | freebusyreader | owner | reader | writer | none   " permission
 done
-echo
+echo ""
 
 oIFS="$IFS"
 IFS=,
@@ -87,6 +87,8 @@ for i in "$@"; do
     echo "Successfully updated settings for $i"
 done
 echo "Updated: $# calendar(s)!"
+echo ""
+sleep 10
 
 echo "--------------------AFTER--------------------"
 ${GAM3} user ${onboard_user} show calendars
