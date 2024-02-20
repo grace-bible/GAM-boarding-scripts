@@ -57,6 +57,7 @@ validate_email() {
 }
 
 end_logger() {
+    echo ""
     echo "Google Workspace boarding process complete"
     echo "========================================"
 }
@@ -85,6 +86,8 @@ for i in "$@"; do
     echo "Added $onboard_user to $i"
 done
 echo "Added to: $# group(s)!"
+echo ""
+sleep 10
 
 echo "--------------------AFTER--------------------"
 ${GAM3} user ${onboard_user} show groups
