@@ -19,6 +19,7 @@ logFile=$logDirectory/$NOW.log
 GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
 
 #https://github.com/GAM-team/GAM/wiki/CalendarExamples
+#https://developers.google.com/calendar/api/v3/reference/calendarList
 
 #Check for arguments
 if [[ $# -eq 3 ]]; then
@@ -84,6 +85,7 @@ set -- $1
 IFS="$oIFS"
 for i in "$@"; do
     ${GAM3} calendar $i add ${permission} ${onboard_user} sendnotifications false || error_exit "Failed to update setttings for $i"
+    ${GAM3} user ${onboard_user} add calendars $i color graphite hidden false selected false notification clear || error_exit "Failed to add $i to ${onboard_user}'s sidebar"
     echo "Successfully updated settings for $i"
 done
 echo "Updated: $# calendar(s)!"
