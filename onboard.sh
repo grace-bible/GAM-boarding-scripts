@@ -133,13 +133,14 @@ help_function() {
     echo "options:"
     echo "  h                       Print this help."
     echo "arguments:"
-    echo "  onboard_first_name      User first name (string)"
-    echo "  onboard_last_name       User last name (string)"
-    echo "  recovery_email          Personal email for the onboarding user (email@domain.com)"
-    echo "  onboard_user            User new domain email (user@company.com)"
-    echo "  job_title               User official job title, for use in signature (string)"
-    echo "  manager_email_address   User manager email (manager@company.com)"
-    echo "  birthday                User birthday (YYYY-MM-DD) for company birthdays calendar"
+    echo "  1 onboard_first_name        User first name (string)"
+    echo "  2 onboard_last_name         User last name (string)"
+    echo "  3 onboard_user              User new domain email (user@company.com)"
+    echo "  4 recovery_email            Personal email for the onboarding user (email@domain.com)"
+    echo "  5 campus                    Assigned campus (AND, SW, CRK, MT, SYS)"
+    echo "  6 job_title                 User official job title, for use in signature (string)"
+    echo "  7 manager_email_address     User manager email (manager@company.com)"
+    echo "  8 birthday                  User birthday (YYYY-MM-DD) for company birthdays calendar"
     echo
 }
 
@@ -169,25 +170,25 @@ if [[ $# -eq 8 ]]; then
 else
     echo "You ran the script without adequate arguments..."
     echo ""
-    read -p "Input the FIRST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_first_name
+    read -p "Input the FIRST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_first_name
     echo ""
     echo ""
-    read -p "Input the LAST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_last_name
+    read -p "Input the LAST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_last_name
     echo ""
     echo ""
-    read -p "Input the PERSONAL RECOVERY EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]" recovery_email
+    read -p "Input the PERSONAL RECOVERY EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]   " recovery_email
     echo ""
     echo ""
-    read -p "Input the WORK EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]" onboard_user
+    read -p "Input the WORK EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_user
     echo ""
     echo ""
-    read -p "Input the employee's JOB TITLE, followed by [ENTER]" job_title
+    read -p "Input the employee's JOB TITLE, followed by [ENTER]   " job_title
     echo ""
     echo ""
-    read -p "Input the email address of the new user's MANAGER, followed by [ENTER]" manager_email_address
+    read -p "Input the email address of the new user's MANAGER, followed by [ENTER]   " manager_email_address
     echo ""
     echo ""
-    read -p "Input the employee's BIRTHDAY (YYYY-MM-DD), followed by [ENTER]" birthday
+    read -p "Input the employee's BIRTHDAY (YYYY-MM-DD), followed by [ENTER]   " birthday
     echo ""
     echo ""
 fi
@@ -196,7 +197,7 @@ confirm_inputs() {
     echo "Employee: ${onboard_first_name} ${onboard_first_name} ${onboard_user}"
     echo "Job title: ${job_title}"
     echo "Manager: ${manager_email_address}"
-    wait 2
+    sleep 2
 
     read -p "Press any key to continue... " -n1 -s
     echo ""
