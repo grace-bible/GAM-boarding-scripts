@@ -152,6 +152,8 @@ while getopts :h option; do
         ;;
     \?)
         echo "Error: invalid option"
+        echo ""
+        help_function
         exit
         ;;
     esac
@@ -194,7 +196,7 @@ else
 fi
 
 confirm_inputs() {
-    echo "Employee: ${onboard_first_name} ${onboard_first_name} ${onboard_user}"
+    echo "Employee: ${onboard_first_name} ${onboard_last_name} ${onboard_user}"
     echo "Job title: ${job_title}"
     echo "Manager: ${manager_email_address}"
     sleep 2
