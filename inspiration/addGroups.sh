@@ -1,4 +1,6 @@
 #!/bin/bash
+# set -euo pipefail
+# IFS=$'\n\t'
 
 #Move execution to the script parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
@@ -22,8 +24,8 @@ GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
 
 #Check for arguments
 if [[ $# -eq 3 ]]; then
-    groups="$1"
-    onboard_user="$2"
+    onboard_user="$1"
+    groups="$2"
     permission="$3"
 else
     echo "Please enter all groups separated by commas and without any spaces."
