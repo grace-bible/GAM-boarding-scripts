@@ -1,4 +1,6 @@
 #!/bin/bash
+# set -euo pipefail
+# IFS=$'\n\t'
 
 #Heavily inspired by Sean Young's [deprovision.sh](https://github.com/seanism/IT/tree/5795238dc1309f245d939c89e975c805dda745f3/GAM)
 
