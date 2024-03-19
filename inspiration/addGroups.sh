@@ -24,8 +24,8 @@ GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
 
 #Check for arguments
 if [[ $# -eq 3 ]]; then
-    onboard_user="$1"
-    groups="$2"
+    onboard_user="$2"
+    groups="$1"
     permission="$3"
 else
     echo "Please enter all groups separated by commas and without any spaces."
@@ -71,13 +71,13 @@ echo "--------------------BEFORE--------------------"
 ${GAM3} user ${onboard_user} show groups
 echo "--------------------BEFORE--------------------"
 
-while true; do
-    validate_email $onboard_user && break
-    echo "Invalid email address. Please try again."
-    read -p "Enter email that should be added to the groups, followed by [ENTER]:   " onboard_user
-    read -p "Enter the group membership type, either Member, Manager, or Owner, followed by [ENTER]:   " role
-done
-echo
+# while true; do
+#     validate_email $onboard_user && break
+#     echo "Invalid email address. Please try again."
+#     read -p "Enter email that should be added to the groups, followed by [ENTER]:   " onboard_user
+#     read -p "Enter the group membership type, either Member, Manager, or Owner, followed by [ENTER]:   " role
+# done
+# echo
 
 oIFS="$IFS"
 IFS=,
