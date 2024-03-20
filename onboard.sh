@@ -108,7 +108,10 @@ set_signature() {
 }
 
 add_groups() {
-    ${GAM3} update group ${campus}-${type_of_employee}@grace-bible.org add member $onboard_user
+    ${GAM3} update group all@grace-bible.org add member $onboard_user
+    ${GAM3} update group ${type_of_employee}@grace-bible.org add member $onboard_user
+    # ${GAM3} update group ${campus}${type_of_employee}@grace-bible.org add member $onboard_user
+    # ${GAM3} update group ${campus}${department}${type_of_employee}@grace-bible.org add member $onboard_user
     echo "Adding user to ${campus} campus ${type_of_employee} email Groups, Calendar, and Drive."
     echo ""
 }
