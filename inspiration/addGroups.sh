@@ -70,6 +70,9 @@ start_logger
 echo "--------------------BEFORE--------------------"
 ${GAM3} user ${onboard_user} show groups
 echo "--------------------BEFORE--------------------"
+echo ""
+read -p "Press any key to continue... " -n1 -s
+echo ""
 
 # while true; do
 #     validate_email $onboard_user && break
