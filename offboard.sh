@@ -198,7 +198,7 @@ fi
 confirm_inputs() {
     echo "Employee to offboard: ${offboard_user}"
     echo "Employee to receive transfers: ${receiving_user}"
-    wait 2
+    sleep 2
 
     read -p "Press any key to continue... " -n1 -s
     echo ""
