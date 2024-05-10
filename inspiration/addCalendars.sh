@@ -44,6 +44,12 @@ start_logger() {
     echo ""
 }
 
+confirm_continue() {
+    echo ""
+    read -p "Press any key to continue... " -n1 -s
+    echo ""
+}
+
 # Function to handle errors gracefully
 error_exit() {
     echo "Error: $1" >&2
@@ -68,9 +74,8 @@ start_logger
 echo "--------------------BEFORE--------------------"
 ${GAM3} user ${onboard_user} show calendars
 echo "--------------------BEFORE--------------------"
-echo ""
-read -p "Press any key to continue... " -n1 -s
-echo ""
+
+confirm_continue
 
 while true; do
     validate_email $onboard_user && break
@@ -93,7 +98,7 @@ for i in "$@"; do
 done
 echo "Updated: $# calendar(s)!"
 echo ""
-sleep 10
+sleep 20
 
 echo "--------------------AFTER--------------------"
 ${GAM3} user ${onboard_user} show calendars
