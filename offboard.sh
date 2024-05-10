@@ -162,8 +162,8 @@ help_function() {
     echo "options:"
     echo "  h                 Print this help."
     echo "arguments:"
-    echo "  offboard_user     User email for the offboarding user"
-    echo "  receiving_user    User email for the receiving user of any transfers"
+    echo "  1 offboard_user     User email for the offboarding user"
+    echo "  2 receiving_user    User email for the receiving user of any transfers"
     echo
 }
 
