@@ -28,6 +28,7 @@ start_logger() {
     echo "========================================"
     echo "GAM3 command alias set to ${GAM3}"
     ${GAM3} version
+    echo "Logging to ${logFile}"
     echo ""
 }
 
@@ -185,12 +186,12 @@ if [[ $# -eq 2 ]]; then
     offboard_user="$1"
     receiving_user="$2"
 else
-    echo "You ran the script without from and to emails!"
+    echo "You ran the script without arguments!"
     echo ""
     read -p "Input the email address of the user to offboard from Google Workspace, followed by [ENTER]   " offboard_user
     echo ""
     echo ""
-    read -p "Input the email address of the user to receive from $offboard_user, followed by [ENTER]   " receiving_user
+    read -p "Input the email address of the user to receive from ${offboard_user}, followed by [ENTER]   " receiving_user
     echo ""
     echo ""
 fi
