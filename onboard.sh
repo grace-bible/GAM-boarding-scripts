@@ -1,6 +1,6 @@
 #!/bin/bash
-# set -euo pipefail
-# IFS=$'\n\t'
+set -euo pipefail
+IFS=$'\n\t'
 
 # Move execution to the script's parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
