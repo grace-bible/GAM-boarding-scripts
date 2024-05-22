@@ -2,14 +2,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-# Update GAM
-bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
-
-# Update GAMADV-XTD3
-bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
-
-source "$(dirname "$0")/config.env"
-
 while getopts :h option; do
     case $option in
     [h])
@@ -31,6 +23,14 @@ while getopts :h option; do
         ;;
     esac
 done
+
+# Update GAM
+bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
+
+# Update GAMADV-XTD3
+bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
+
+source "$(dirname "$0")/config.env"
 
 # Move execution to the script's parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
