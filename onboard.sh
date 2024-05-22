@@ -216,6 +216,20 @@ set_signature() {
     echo "Setting up email signature..."
     ${GAM3} user ${onboard_user} signature file ${SIG_FILE} replace NAME "${onboard_first_name} ${onboard_last_name}" replace TITLE "${job_title}"
     echo "Signature set."
+    read -p "Do you want to view the signature to confirm it was set properly? (y/n): " -r response
+    case "$response" in
+    [Yy]*)
+        echo ""
+        echo ""
+        view_signature
+        ;;
+    [Nn]*)
+        echo "Signature view skipped."
+        ;;
+    *)
+        echo "Invalid response. Signature view skipped."
+        ;;
+    esac
     echo "Exiting set_signature function at $(date)"
     echo ""
     echo ""
