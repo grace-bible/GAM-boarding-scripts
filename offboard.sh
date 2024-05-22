@@ -260,6 +260,7 @@ entry_options=()
 entries_count=${#STEP_LIST[@]}
 whip_message="Navigate with the TAB key, select with the SPACE key."
 
+# Generate options for the whiptail checklist
 for i in ${!STEP_LIST[@]}; do
     if [ $((i % 2)) == 0 ]; then
         entry_options+=($(($i / 2)))
@@ -268,25 +269,39 @@ for i in ${!STEP_LIST[@]}; do
     fi
 done
 
-SELECTED_STEPS_RAW=$(
-    whiptail \
-        --checklist \
-        --separate-output \
-        --title 'Offboarding' \
-        "$whip_message" \
-        40 80 \
-        "$entries_count" -- "${entry_options[@]}" \
-        3>&1 1>&2 2>&3
-)
+while true; do
+    # Temporarily disable 'set -e' to handle whiptail exit status
+    set +e
+    SELECTED_STEPS_RAW=$(
+        whiptail \
+            --checklist \
+            --separate-output \
+            --title 'Offboarding' \
+            "$whip_message" \
+            40 80 10 \
+            "$entries_count" -- "${entry_options[@]}" \
+            3>&1 1>&2 2>&3
+    )
+    exitstatus=$?
+    set -e
 
-if [[ ! -z SELECTED_STEPS_RAW ]]; then
-    for STEP_FN_ID in ${SELECTED_STEPS_RAW[@]}; do
-        FN_NAME_ID=$(($STEP_FN_ID * 2))
-        STEP_FN_NAME="${STEP_LIST[$FN_NAME_ID]}"
-        echo "---Running ${STEP_FN_NAME}---"
-        $STEP_FN_NAME
-    done
-fi
+    if [[ $exitstatus -ne 0 ]]; then
+        echo "User cancelled the selection. Exiting script."
+        break
+    fi
+
+    if [[ ! -z "$SELECTED_STEPS_RAW" ]]; then
+        for STEP_FN_ID in ${SELECTED_STEPS_RAW[@]}; do
+            FN_NAME_ID=$(($STEP_FN_ID * 2))
+            STEP_FN_NAME="${STEP_LIST[$FN_NAME_ID]}"
+            echo "---Running ${STEP_FN_NAME}---"
+            $STEP_FN_NAME
+        done
+    else
+        echo "No options selected. Exiting script."
+        break
+    fi
+done
 
 #get_info
 #reset_password

@@ -276,7 +276,7 @@ end_logger() {
     echo "========================================"
 }
 
-#Whiptail dialog UI
+# Whiptail dialog UI
 STEP_LIST=(
     "get_info" "Print info for an existing user account"
     "update_info" "Set details: manager, campus, department, job title"
@@ -299,25 +299,44 @@ for i in ${!STEP_LIST[@]}; do
     fi
 done
 
-SELECTED_STEPS_RAW=$(
-    whiptail \
-        --checklist \
-        --separate-output \
-        --title 'Onboarding' \
-        "$whip_message" \
-        40 80 \
-        "$entries_count" -- "${entry_options[@]}" \
-        3>&1 1>&2 2>&3
-)
+while true; do
+    # Temporarily disable 'set -e' to handle whiptail exit status
+    set +e
+    SELECTED_STEPS_RAW=$(
+        whiptail \
+            --checklist \
+            --separate-output \
+            --title 'Onboarding' \
+            "$whip_message" \
+            20 78 10 \
+            "${entry_options[@]}" \
+            3>&1 1>&2 2>&3
+    )
+    exitstatus=$?
+    set -e
 
-if [[ ! -z SELECTED_STEPS_RAW ]]; then
-    for STEP_FN_ID in ${SELECTED_STEPS_RAW[@]}; do
-        FN_NAME_ID=$(($STEP_FN_ID * 2))
-        STEP_FN_NAME="${STEP_LIST[$FN_NAME_ID]}"
-        echo "---Running ${STEP_FN_NAME}---"
-        $STEP_FN_NAME
-    done
-fi
+    if [[ $exitstatus -ne 0 ]]; then
+        echo "User cancelled the selection. Exiting script."
+        break
+    fi
+
+    if [[ ! -z "$SELECTED_STEPS_RAW" ]]; then
+        for STEP_FN_ID in ${SELECTED_STEPS_RAW[@]}; do
+            FN_NAME_ID=$(($STEP_FN_ID * 2))
+            STEP_FN_NAME="${STEP_LIST[$FN_NAME_ID]}"
+            echo "---Running ${STEP_FN_NAME}---"
+            $STEP_FN_NAME
+        done
+    else
+        echo "No options selected. Exiting script."
+        break
+    fi
+
+    # Optionally, ask if the user wants to perform more tasks
+    if ! whiptail --yesno "Do you want to perform more tasks?" 10 60; then
+        break
+    fi
+done
 
 #set_password
 #create_user
