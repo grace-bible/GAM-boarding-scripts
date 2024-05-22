@@ -197,6 +197,17 @@ create_user() {
     echo ""
 }
 
+view_signature() {
+    echo "Entering view_signature function at $(date)"
+    echo "Fetching the current user email signature..."
+    echo "Here's the ${onboard_user}'s current email signature:"
+    ${GAM3} user ${onboard_user} show signature format
+    echo "Current email signature retrieved."
+    echo "Exiting view_signature function at $(date)"
+    echo ""
+    echo ""
+}
+
 set_signature() {
     echo "Entering set_signature function at $(date)"
     if [ -z "${job_title:-}" ]; then
@@ -206,17 +217,6 @@ set_signature() {
     ${GAM3} user ${onboard_user} signature file ${SIG_FILE} replace NAME "${onboard_first_name} ${onboard_last_name}" replace TITLE "${job_title}"
     echo "Signature set."
     echo "Exiting set_signature function at $(date)"
-    echo ""
-    echo ""
-}
-
-view_signature() {
-    echo "Entering view_signature function at $(date)"
-    echo "Fetching the current user email signature..."
-    echo "Here's the ${onboard_user}'s current email signature:"
-    ${GAM3} user ${onboard_user} show signature format
-    echo "Current email signature retrieved."
-    echo "Exiting view_signature function at $(date)"
     echo ""
     echo ""
 }
@@ -265,8 +265,8 @@ STEP_LIST=(
     "get_info" "Print info for an existing user account"
     "update_info" "Set details: manager, campus, department, job title"
     "create_user" "Create a new user account"
-    "set_signature" "Configure a standard format email signature"
     "view_signature" "Print an existing user email signature"
+    "set_signature" "Configure a standard format email signature"
     "add_groups" "Add user to new groups"
 )
 
