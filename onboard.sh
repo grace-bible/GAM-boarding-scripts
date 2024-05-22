@@ -52,9 +52,8 @@ update_gam() {
     bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
     bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
     # Update the last update date in the config.env file
-    local current_date=$(date +%F)
-    sed -i'' -e "s/^GAM_LAST_UPDATE=.*/GAM_LAST_UPDATE=\"$current_date\"/" "$(dirname "$0")/config.env"
-    export GAM_LAST_UPDATE="$current_date"
+    sed -i'' -e "s/^GAM_LAST_UPDATE=.*/GAM_LAST_UPDATE=\"${NOW}\"/" "$(dirname "$0")/config.env"
+    export GAM_LAST_UPDATE="${NOW}"
 }
 
 # Check the last update date
@@ -62,7 +61,10 @@ if [[ -z "${GAM_LAST_UPDATE:-}" ]]; then
     echo "GAM_LAST_UPDATE variable is not set in the config file."
     update_gam
 else
-    DAYS_SINCE_LAST_UPDATE=$((($(date -d "${NOW}" +%s) - $(date -d "${GAM_LAST_UPDATE}" +%s)) / 86400))
+    LAST_UPDATE_DATE=$(date -j -f "%Y-%m-%d" "${GAM_LAST_UPDATE}" "+%s")
+    CURRENT_DATE_SECS=$(date -j -f "%Y-%m-%d" "${NOW}" "+%s")
+    SECONDS_DIFF=$((CURRENT_DATE_SECS - LAST_UPDATE_DATE))
+    DAYS_SINCE_LAST_UPDATE=$((SECONDS_DIFF / 86400))
 
     if [ "${DAYS_SINCE_LAST_UPDATE}" -ge "${UPDATE_INTERVAL_DAYS}" ]; then
         update_gam
