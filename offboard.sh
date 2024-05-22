@@ -254,6 +254,7 @@ STEP_LIST=(
     "transfer_calendar" "Transfer Google Calendars and events"
     "remove_groups" "Remove from all Google Groups"
     "remove_drives" "Remove from all Shared Drives"
+    "set_org_unit" "Move user to Inactive OU"
 )
 
 entry_options=()
@@ -315,7 +316,7 @@ done
 #transfer_calendar
 #remove_groups
 #remove_drives
-set_org_unit
+#set_org_unit
 suspend
 end_logger
 
