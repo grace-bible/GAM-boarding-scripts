@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
 # Update GAM
 bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
@@ -6,8 +8,7 @@ bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
 # Update GAMADV-XTD3
 bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
 
-GAM=$HOME/bin/gam/gam
-GAM3=$HOME/bin/gamadv-xtd3/gam
+source "$(dirname "$0")/config.env"
 
 # Get the current date in the YYYY-MM-DD format
 date_prefix=$(date '+%Y-%m-%d %H%M')
