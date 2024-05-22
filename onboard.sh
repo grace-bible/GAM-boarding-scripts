@@ -101,20 +101,22 @@ else
 fi
 
 confirm_inputs() {
-    echo "Employee: ${onboard_first_name} ${onboard_last_name} ${onboard_user}"
+    echo "Confirming inputs at $(date)"
+    echo "Employee: ${onboard_first_name} ${onboard_last_name} (${onboard_user})"
     echo "Manager: ${manager_email_address}"
-    echo "User activation sent to ${recovery_email}"
+    echo "Recovery email: ${recovery_email}"
     echo "Campus: ${campus}"
     echo "Job title: ${job_title}"
     echo "Birthday: ${birthday}"
-    echo ""
+    echo "Inputs confirmed."
     echo ""
     sleep 2
 }
 
 confirm_continue() {
-    read -p "Press any key to continue... " -n1 -s
-    echo ""
+    echo "Press any key to continue..."
+    read -n1 -s
+    echo "Continuing execution at $(date)"
     echo ""
 }
 
