@@ -199,6 +199,9 @@ create_user() {
 
 set_signature() {
     echo "Entering set_signature function at $(date)"
+    if [ -z "${job_title:-}" ]; then
+        read -p "Enter the onboard user's job title: " -r job_title
+    fi
     echo "Setting up email signature..."
     ${GAM3} user ${onboard_user} signature file ${SIG_FILE} replace NAME "${onboard_first_name} ${onboard_last_name}" replace TITLE "${job_title}"
     echo "Signature set."
