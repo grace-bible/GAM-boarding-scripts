@@ -86,10 +86,13 @@ else
     read -p "Input the LAST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_last_name
     echo ""
     read -p "Input the WORK EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_user
+    onboard_user=$(echo "$onboard_user" | tr '[:upper:]' '[:lower:]')
     echo ""
     read -p "Input the email address of the new user's MANAGER, followed by [ENTER]   " manager_email_address
+    manager_email_address=$(echo "$manager_email_address" | tr '[:upper:]' '[:lower:]')
     echo ""
     read -p "Input the PERSONAL RECOVERY EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]   " recovery_email
+    recovery_email=$(echo "$recovery_email" | tr '[:upper:]' '[:lower:]')
     echo ""
     read -p "Input the CAMPUS of the new user to be provisioned in Google Workspace, followed by [ENTER]   " campus
     echo ""
@@ -203,6 +206,7 @@ add_groups() {
 
     read -p "Please enter all groups separated by commas (e.g., group1@domain.com,group2@domain.com): " groups_input
     echo "Groups input: ${groups_input}"
+    groups_input=$(echo "$groups_input" | tr '[:upper:]' '[:lower:]')
     IFS=',' read -r -a groups <<<"$groups_input"
 
     for group in "${groups[@]}"; do
