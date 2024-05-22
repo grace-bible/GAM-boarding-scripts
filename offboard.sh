@@ -24,14 +24,6 @@ while getopts :h option; do
     esac
 done
 
-# Update GAM
-bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
-
-# Update GAMADV-XTD3
-bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
-
-source "$(dirname "$0")/config.env"
-
 # Move execution to the script's parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
 parent_path=$(
@@ -42,23 +34,84 @@ cd "$parent_path"
 
 #Define variables
 NOW=$(date '+%F')
-accountName=$(whoami)
 logFile=${LOG_DIR}/$NOW.log
+
+source "$(dirname "$0")/config.env"
+
+# Function to update GAM and GAMADV-XTD3
+update_gam() {
+    echo "Updating GAM and GAMADV-XTD3..."
+    bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
+    bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
+    # Update the last update date in the config.env file
+    local current_date=$(date +%F)
+    sed -i'' -e "s/^GAM_LAST_UPDATE=.*/GAM_LAST_UPDATE=\"$current_date\"/" "$(dirname "$0")/config.env"
+    export GAM_LAST_UPDATE="$current_date"
+}
+
+# Check the last update date
+if [[ -z "${GAM_LAST_UPDATE:-}" ]]; then
+    echo "GAM_LAST_UPDATE variable is not set in the config file."
+    update_gam
+else
+    DAYS_SINCE_LAST_UPDATE=$((($(date -d "${NOW}" +%s) - $(date -d "${GAM_LAST_UPDATE}" +%s)) / 86400))
+
+    if [ "${DAYS_SINCE_LAST_UPDATE}" -ge "${UPDATE_INTERVAL_DAYS}" ]; then
+        update_gam
+    else
+        echo "GAM was updated ${DAYS_SINCE_LAST_UPDATE} days ago. Skipping update."
+    fi
+fi
 
 # Ensure the log directory exists
 mkdir -p "${LOG_DIR}"
 
+# Start logging
+exec &> >(tee -a "$logFile")
+echo "========================================"
+echo "Starting offboard.sh script at $(date)"
+echo "========================================"
+echo "GAM3 command alias set to ${GAM3}"
+${GAM3} version
+echo "Logging to ${logFile}"
+echo ""
+
 # Define available functions for the Whiptail menu
-start_logger() {
-    exec &> >(tee -a "$logFile")
-    echo "========================================"
-    echo "Starting offboard.sh script at $(date)"
-    echo "========================================"
-    echo "GAM3 command alias set to ${GAM3}"
-    ${GAM3} version
-    echo "Logging to ${logFile}"
+
+#Check for arguments
+if [[ $# -eq 2 ]]; then
+    offboard_user="$1"
+    receiving_user="$2"
+else
+    echo "You ran the script without adequate arguments..."
+    echo ""
+    read -p "Input the email address of the USER TO OFFBOARD from Google Workspace, followed by [ENTER]   " offboard_user
+    offboard_user=$(echo "$offboard_user" | tr '[:upper:]' '[:lower:]')
+    echo ""
+    read -p "Input the email address of the USER TO RECEIVE from ${offboard_user}, followed by [ENTER]   " receiving_user
+    receiving_user=$(echo "$receiving_user" | tr '[:upper:]' '[:lower:]')
+    echo ""
+    echo ""
+fi
+
+confirm_inputs() {
+    echo "Confirming inputs at $(date)"
+    echo "Employee to offboard: ${offboard_user}"
+    echo "Employee to receive transfers: ${receiving_user}"
+    echo "Inputs confirmed."
+    echo ""
+    sleep 2
+}
+
+confirm_continue() {
+    echo "Press any key to continue..."
+    read -n1 -s
+    echo "Continuing execution at $(date)"
     echo ""
 }
+
+confirm_inputs
+confirm_continue
 
 unsuspend() {
     echo "Unsuspending user account for offboarding..."
@@ -182,32 +235,6 @@ end_logger() {
     echo "Google Workspace boarding process complete"
     echo "========================================"
 }
-
-#Check for arguments
-if [[ $# -eq 2 ]]; then
-    offboard_user="$1"
-    receiving_user="$2"
-else
-    echo "You ran the script without arguments!"
-    echo ""
-    read -p "Input the email address of the user to offboard from Google Workspace, followed by [ENTER]   " offboard_user
-    echo ""
-    echo ""
-    read -p "Input the email address of the user to receive from ${offboard_user}, followed by [ENTER]   " receiving_user
-    echo ""
-    echo ""
-fi
-
-confirm_inputs() {
-    echo "Employee to offboard: ${offboard_user}"
-    echo "Employee to receive transfers: ${receiving_user}"
-    sleep 2
-
-    read -p "Press any key to continue... " -n1 -s
-    echo ""
-}
-
-confirm_inputs
 
 #Start the global logger, begin functions
 start_logger
