@@ -199,28 +199,23 @@ add_groups() {
     echo "Entering add_groups function at $(date)"
     echo "Adding user to groups..."
 
-    # Prompt for the list of groups
     read -p "Please enter all groups separated by commas (e.g., group1@domain.com,group2@domain.com): " groups_input
-
-    # Convert the string to an array of groups
+    echo "Groups input: ${groups_input}"
     IFS=',' read -r -a groups <<<"$groups_input"
 
-    # Loop through each group and add the user with the specified permission level
     for group in "${groups[@]}"; do
         read -p "Enter the permission level for $group (e.g., MEMBER, MANAGER, OWNER): " permission
-
-        # Validate the permission level
+        echo "Adding ${onboard_user} to ${group} as ${permission}"
         case "$permission" in
         MEMBER | MANAGER | OWNER)
-            # Add the user to the group with the specified permission level
-            if ${GAM3} update group ${group} add ${permission} user ${onboard_user}; then
-                echo "Added ${onboard_user} to ${group} as a ${permission}."
+            if ${GAM3} update group "${group}" add "${permission}" user "${onboard_user}"; then
+                echo "Successfully added ${onboard_user} to ${group} as a ${permission}."
             else
-                echo "Failed to add ${onboard_user} to ${group}."
+                echo "Error: Failed to add ${onboard_user} to ${group}" >&2
             fi
             ;;
         *)
-            echo "Invalid permission level. Valid options are MEMBER, MANAGER, OWNER."
+            echo "Invalid permission level: ${permission}. Valid options are MEMBER, MANAGER, OWNER." >&2
             ;;
         esac
     done
