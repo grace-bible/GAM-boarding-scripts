@@ -207,6 +207,7 @@ add_groups() {
 
     for group in "${groups[@]}"; do
         read -p "Enter the permission level for $group (e.g., MEMBER, MANAGER, OWNER): " permission
+        permission=$(echo "$permission" | tr '[:upper:]' '[:lower:]')
         echo "Adding ${onboard_user} to ${group} as ${permission}"
         case "$permission" in
         MEMBER | MANAGER | OWNER)
