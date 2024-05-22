@@ -38,3 +38,4 @@ Temporary Items
 test.sh
 gam filetree.sh
 dependencies/whiptailmenu.bash
+config.env
