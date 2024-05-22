@@ -1,173 +1,159 @@
-# Google Workspace User Provisioning and Deprovisioning Scripts
+## Google Workspace User Management Scripts
 
-This collection of bash scripts automate the process of onboarding new users in Google Workspace. It uses the [Google Apps Manager (GAMADV-XTD3)](https://github.com/taers232c/GAMADV-XTD3) command-line tool to interact with Google Workspace APIs.[^1]
+This repository contains Bash scripts for automating the onboarding and offboarding of users in Google Workspace using the GAMADV-XTD3 command-line tool. The scripts are designed to streamline these processes and ensure consistency across different environments.
 
-> [!CAUTION]
-> Ensure that sensitive information, such as passwords, is handled securely. Be careful publishing real passwords (even temporary ones) in a repo, and only disable `changepasswordatnextlogin` in [onboard.sh](/onboard.sh) if you know what you're doing.
+### Prerequisites
 
-## Features
+1. **GAMADV-XTD3**: Ensure that GAMADV-XTD3 is installed and configured on your machine.
+2. **Bash**: The scripts are designed to run in a Bash shell environment.
 
-- **Interactive shell input:** The script prompts the administrator to input essential details for a new user, such as first name, last name, recovery email, manager, etc.
+### Setup
 
-- **Log executed functions for audit:** Logs the provisioning process and uploads logs to a specified folder for audit and reference.
+1. **Clone the Repository**:
 
-### Onboarding features
+   ```bash
+   git clone <repository_url>
+   cd <repository_directory>
+   ```
 
-- **Create new users:** Creates a new user in Google Workspace with a randomly generated password. Sends notifications to the recovery email and manager email. The user is required to change the password at the next login. Sets the organizational unit (OU) for the new user to `New users` until MFA can be configured at the first IT onboard meeting.
+2. **Create and Configure `config.env`**:
+   Create a `config.env` file in the root directory of the repository with the following variables. This file will be sourced by the scripts to configure necessary paths and settings.
 
-- **Updates org directory information:** Updates organizational directory information for the new user, including employee type, campus, department, and job title.
+   **Example `config.env`**:
 
-- **Setup email signature:** Configures the email signature for the new user using [a predefined template](/dependencies/signature.txt).
+   ```env
+   # Directory for storing logs
+   LOG_DIR="../_ARCHIVE/gam"
 
-- **Add to security and mailing Groups:** Adds the new user to campus-specific staff email groups, role-based permission groups, team-based functional groups, calendars, and drives based on the campus and department(s).
+   # Path to the GAMADV-XTD3 command
+   GAM_CMD="../bin/gamadv-xtd3/gam"
 
-### Offboarding features
+   # Path to the signature template file
+   SIG_FILE="dependencies/signature.txt"
 
-- **Deprovisions user access:** Resets the user password, erases password recovery and multi-factor authentication methods, and deprovisions all `popimap` and `backupcodes`.
+   # Email addresses for notifications
+   CC_HR="hr@company.com"
 
-- **Sets the end date in the directory:** Sets the employee end date for record as a custom schema.
+   # Calendar ID for the staff birthday calendar
+   BDAY_CAL="somegroup@group.calendar.google.com"
+   ```
 
-- **Removes user from directory:** Removes the user from global address list (GAL) directory visibility.
+3. **Install Dependencies**:
+   Ensure that all required tools and dependencies are installed and updated. This includes GAMADV-XTD3, which can be installed using the following commands:
+   ```bash
+   bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
+   bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
+   ```
 
-- **Forwards email:** Configures forwarding from the offboarded user to a new receiving user. Sets email autoreply for a year, indicates that the user no longer works for the organization.
+### Usage
 
-- **Transfer drive:** Transfers all `My Drive` files to the specified receiving user.
+#### Onboarding Script
 
-- **Transfer calendar:** Transfers all user calendar events to the specified receiving user.
+The `onboard.sh` script automates the process of onboarding new users in Google Workspace.
 
-- **Removes Group memberships:** Removes the exiting user from all mailing and security Google Groups.
+**Syntax**:
 
-- **Removes Shared Drive memberships:** Removes the exiting user from all directly added Shared Drives.
+```bash
+./onboard.sh [-h] [<onboard_first_name> <onboard_last_name> <recovery_email> <onboard_user> <manager_email_address> <campus> <job_title> (<birthday>)]
+```
 
-- **Suspends the user:** Suspends the user account and moves the user to the `Inactive` organizational unit (OU) until formally deleted or archived.
+**Options**:
 
-## Prerequisites
+- `-h`: Print the help message.
 
-1. Install [GAMADV-XTD3](https://github.com/taers232c/GAMADV-XTD3) and set it up with the required permissions.
+**Arguments**:
 
-2. Make sure to customize paths and file locations according to your environment.
+1. `onboard_first_name`: User's first name.
+2. `onboard_last_name`: User's last name.
+3. `onboard_user`: New domain email for the user.
+4. `manager_email_address`: User's manager email.
+5. `recovery_email`: Personal email for the onboarding user.
+6. `campus`: Assigned campus (AND, SW, CRK, MT, SYS).
+7. `job_title`: User's official job title (optional).
+8. `birthday`: User's birthday (YYYY-MM-DD) for the company birthday calendar (optional).
 
-## Usage
+**Example**:
 
-> [!TIP] 
-> **Both the [onboarding script](/onboard.sh) and the [offboarding script](/offboard.sh) will run with either CLI arguments _or_ with user prompted input.** If an unexpected number of arguments are received, the script will proceed with the guided boarding process. _Remember to customize the scripts according to your organization's specific needs!_
+```bash
+./onboard.sh John Doe john.doe@company.com manager@company.com john.doe@example.com AND "Software Engineer" 1990-01-01
+```
 
-1. Run the script in the terminal:
+**Functionality**:
 
-   - `bash ./onboard.sh` runs the [guided onboarding process](/onboard.sh)
-   - `bash ./offboard.sh` runs the [guided offboarding process](/offboard.sh)
+- The script can be run with or without arguments. If arguments are not provided, it will prompt the user for input.
+- It performs tasks such as creating the user, setting up the email signature, and adding the user to groups based on the provided inputs.
 
-2. Follow the prompts to input the necessary information for the new user.
+#### Offboarding Script
 
-3. The script will create the user, update group memberships, set up the email signature, and log the process.
+The `offboard.sh` script automates the process of offboarding users in Google Workspace.
 
-4. Logs are saved locally and uploaded to a specified Team Drive folder.
+**Syntax**:
 
-# IT boarding checklists
+```bash
+./offboard.sh [-h] [<offboard_user> <receiving_user>]
+```
 
-## Detailed onboarding checklist
+**Options**:
 
-> [!NOTE]
-> The [onboarding script](/onboard.sh) expects exactly eight (8) arguments at entry in the following order: `onboard_first_name`, `onboard_last_name`, `onboard_user`, `recovery_email`, `campus`, `job_title`, `manager_email_address`, and `birthday`. Any more (or fewer) arguments will fail over to a guided entry, which will prompt for each variable sequentially.
+- `-h`: Print the help message.
 
-### Collect employee personal info
+**Arguments**:
 
-- [ ] Legal name
-- [ ] Preferred nickname
-- [ ] Personal email (for password delivery)
-- [ ] Personal phone (for multifactor authentication)
-- [ ] Birthday (for calendar)
+1. `offboard_user`: User email for the offboarding user.
+2. `receiving_user`: User email for the receiving user of any transfers.
 
-### Collect employee professional info
+**Example**:
 
-- [ ] Campus
-- [ ] Office location
-- [ ] Expected work hours
-- [ ] Job title
-- [ ] Manager email
-- [ ] Start date
-- [ ] Employment type (status)
+```bash
+./offboard.sh jane.doe@company.com admin@company.com
+```
 
-### Onboard the operational environment
+**Functionality**:
 
-#### Groups for security and email:
+- The script can be run with or without arguments. If arguments are not provided, it will prompt the user for input.
+- It performs tasks such as unsuspending the user account, resetting passwords, transferring drive and calendar data, and setting email forwarding.
 
-- [ ] Department(s)
-- [ ] Role(s)
-  - Fellows: Directors, First Year, Second Year, Third Year
-  - Operations, Administrators, Supervisors, etc.
-  - Ministry Leads, Ministers, MOD, etc.
-- [ ] Campus, office, or working group(s)
-- [ ] Team(s)
-  - Vision, Strategy, Management, Operations, etc.
-  - Hubs, Facilities, IT, etc.
+### Detailed Steps for Onboarding
 
-#### Other
+1. **Create User**:
 
-- [ ] Provision door access codes, keys, security cameras
-- [ ] Provision secondary software: Notion, Canva, Adobe, etc.
+   - Sets a temporary password and notifies the user and HR.
+   - Sets the employment start date and adds the user's birthday to the company calendar.
 
-### Deploy appropriate equipment
+2. **Set Signature**:
 
-#### Mac
+   - Configures the user's email signature based on a template.
 
-- [ ] `$1,999.00` 14-inch MacBook Pro: Apple M3 chip with 8‑core CPU and 10‑core GPU, 16GB RAM 512GB SSD - Space Gray
-- [ ] `$237.00` AppleCare+ for 14‑inch MacBook Pro (M3)
-- [ ] `$80.00` MX ANYWHERE 3S
-- [ ] `$110.00` MX KEYS S
-- [ ] `$350.00` LG Ultrawide monitor 34WR50QC-B
-- [ ] `$70.00` Apple MultiPort Adapter
+3. **Add Groups**:
+   - Adds the user to specified groups with appropriate permissions.
 
-#### PC
+### Detailed Steps for Offboarding
 
-- [ ] `$2,000.00` Dell Latitude 7440 14 inch I7-1355U 16GB 1DIMM 512GB W1114IN
-- [ ] `$80.00` MX ANYWHERE 3S
-- [ ] `$110.00` MX KEYS S
-- [ ] `$280.00` ViewSonic 27 Inch 1440p IPS Monitor with 65W USB
-- [ ] `$70.00` Dell Thunderbolt Dock - WD22TB4
+1. **Get Info**:
 
-## Detailed offboarding checklist
+   - Logs the user's information for audit purposes.
 
-> [!NOTE]
-> The [offboarding script](/offboard.sh) expects exactly two (2) arguments at entry in the following order: `offboard_user` and `receiving_user`. Any more (or fewer) arguments will fail over to a guided entry, which will prompt for each variable sequentially.
+2. **Reset Password and Recovery Options**:
 
-### Collect employee personal info
+   - Generates a random password and clears recovery options.
 
-- [ ] Personal email and/or phone (to coordinate asset recovery)
+3. **Deprovision**:
 
-### Collect employee professional info
+   - Disables services and clears access tokens.
 
-- [ ] Office location (for asset recovery)
-- [ ] End date
+4. **Transfer Data**:
 
-#### Other
+   - Transfers the user's Drive and Calendar data to another user.
 
-- [ ] [Inbox transfer](https://support.google.com/a/answer/6351475): manager, successor, or none
-- [ ] [Email forwarding](https://support.google.com/a/answer/4524505): manager, successor, or none
-- [ ] [Drive transfer](https://support.google.com/drive/answer/2494892): manager, successor, Shared Drive, or none
-- [ ] [Calendar transfer](https://support.google.com/calendar/answer/78739): manager, successor, or none
-- [ ] Deprovision door access codes, keys, security cameras
-- [ ] [Deprovision](https://support.google.com/a/answer/6329207) software permissions:
-  - Google Workspace
-  - Active Directory
-  - CCB (Groups, Process Queues, Forms, Departments, etc.)
-  - Pushpay, ShelbyNext
-  - Avigilon, enteliWEB
-  - Adobe, Canva, Meta (Facebook, Instagram, etc.), MailChimp, Flickr
-  - Slack
-  - Planning Center, Resi, Bluebolt, Multitracks, Soundtrack Your Brand, Bitwarden
-  - Notion, Tally, GitHub, n8n, Meraki
-- [ ] Suspend or delete the user account
+5. **Set Auto-Reply and Forwarding**:
 
-> [!WARNING]
-> Make _sure_ you need to _delete_ a user before doing so! By suspending a user at offboarding instead of deleting them, we avoid the irreversible action [until we can confidently proceed](https://support.google.com/a/answer/9048836).
+   - Configures an autoreply message and forwards incoming emails.
 
-### Reclaim issued assets
+6. **Suspend User**:
+   - Suspends the user account after all other steps are complete.
 
-- [ ] Computer, keyboard, mouse, monitor
+### Notes
 
-## License
-
-This script is licensed under the [MIT License](/LICENSE.md).
-
-[^1]: Though almost entirely different (to the point that it's not a branch), this project was largely inspired by [deepanudaiyar's G-Suite repo](https://github.com/deepanudaiyar/G-Suite)
+- Ensure that `config.env` is correctly configured with all required paths and settings.
+- Review and test the scripts in a controlled environment before deploying them in production.
+- Regularly update GAMADV-XTD3 to ensure compatibility with the latest Google Workspace APIs.
