@@ -2,6 +2,12 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# Update GAM
+bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
+
+# Update GAMADV-XTD3
+bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
+
 source "$(dirname "$0")/config.env"
 
 while getopts :h option; do
@@ -45,6 +51,8 @@ mkdir -p "${LOG_DIR}"
 # Define available functions for the Whiptail menu
 start_logger() {
     exec &> >(tee -a "$logFile")
+    echo "========================================"
+    echo "Starting offboard.sh script at $(date)"
     echo "========================================"
     echo "GAM3 command alias set to ${GAM3}"
     ${GAM3} version

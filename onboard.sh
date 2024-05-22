@@ -2,6 +2,12 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# Update GAM
+bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
+
+# Update GAMADV-XTD3
+bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
+
 source "$(dirname "$0")/config.env"
 
 # Process options
@@ -52,6 +58,8 @@ mkdir -p "${LOG_DIR}"
 
 # Start logging
 exec &> >(tee -a "$logFile")
+echo "========================================"
+echo "Starting onboard.sh script at $(date)"
 echo "========================================"
 echo "GAM3 command alias set to ${GAM3}"
 ${GAM3} version
