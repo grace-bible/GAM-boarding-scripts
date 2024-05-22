@@ -1,13 +1,31 @@
-## Google Workspace User Management Scripts
+# GAM Google Workspace User Management Scripts
 
-This repository contains Bash scripts for automating the onboarding and offboarding of users in Google Workspace using the GAMADV-XTD3 command-line tool. The scripts are designed to streamline these processes and ensure consistency across different environments.
+This repository offers Bash scripts that simplify user management in Google Workspace using GAMADV-XTD3 command-line tool, automating tasks like onboarding, offboarding, and updates for consistent and efficient administration.
 
-### Prerequisites
+## Prerequisites
 
 1. **GAMADV-XTD3**: Ensure that GAMADV-XTD3 is installed and configured on your machine.
 2. **Bash**: The scripts are designed to run in a Bash shell environment.
 
-### Setup
+## Features
+
+- **Onboarding Script (`onboard.sh`)**:
+
+  - Creates new user accounts.
+  - Sets up email signatures and group memberships.
+  - Adds employment details and calendar events.
+
+- **Offboarding Script (`offboard.sh`)**:
+
+  - Resets passwords and clears recovery options.
+  - Transfers Drive and Calendar data.
+  - Configures email forwarding and auto-replies.
+  - Removes users from groups and hides from the GAL.
+
+- **Reporting Script (`print.sh`)**:
+  - Generates various reports on users, groups, aliases, admins, calendars, and resources.
+
+## Setup
 
 1. **Clone the Repository**:
 
@@ -16,26 +34,33 @@ This repository contains Bash scripts for automating the onboarding and offboard
    cd <repository_directory>
    ```
 
-2. **Create and Configure `config.env`**:
-   Create a `config.env` file in the root directory of the repository with the following variables. This file will be sourced by the scripts to configure necessary paths and settings.
+2. **Configure `config.env`**:
 
-   **Example `config.env`**:
+   - Create a `config.env` file with necessary environment variables such as `LOG_DIR`, `GAM_CMD`, `SIG_FILE`, `CC_HR`, `BDAY_CAL`, and `GAM_LAST_UPDATE`.
 
-   ```env
-   # Directory for storing logs
-   LOG_DIR="../_ARCHIVE/gam"
+   ### Sample `config.env`
 
-   # Path to the GAMADV-XTD3 command
-   GAM_CMD="../bin/gamadv-xtd3/gam"
+   ```bash
+   # Directory for logs
+   LOG_DIR=/path/to/log/directory
 
-   # Path to the signature template file
-   SIG_FILE="dependencies/signature.txt"
+   # Path to GAM executable
+   GAM3=/path/to/gamadv-xtd3/gam
 
-   # Email addresses for notifications
-   CC_HR="hr@company.com"
+   # Path to email signature file
+   SIG_FILE=/path/to/signature.txt
 
-   # Calendar ID for the staff birthday calendar
-   BDAY_CAL="somegroup@group.calendar.google.com"
+   # HR email for notifications
+   CC_HR=hr@yourdomain.com
+
+   # Birthday calendar ID
+   BDAY_CAL=your_calendar_id@group.calendar.google.com
+
+   # Last update date for GAM
+   GAM_LAST_UPDATE=2024-05-22
+
+   # Update interval in days
+   UPDATE_INTERVAL_DAYS=7
    ```
 
 3. **Install Dependencies**:
@@ -45,11 +70,9 @@ This repository contains Bash scripts for automating the onboarding and offboard
    bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
    ```
 
-### Usage
+## Usage
 
-#### Onboarding Script
-
-The `onboard.sh` script automates the process of onboarding new users in Google Workspace.
+### Onboarding Script
 
 **Syntax**:
 
@@ -72,25 +95,12 @@ The `onboard.sh` script automates the process of onboarding new users in Google 
 7. `job_title`: User's official job title (optional).
 8. `birthday`: User's birthday (YYYY-MM-DD) for the company birthday calendar (optional).
 
-**Example**:
-
-```bash
-./onboard.sh John Doe john.doe@company.com manager@company.com john.doe@example.com AND "Software Engineer" 1990-01-01
-```
-
-**Functionality**:
-
-- The script can be run with or without arguments. If arguments are not provided, it will prompt the user for input.
-- It performs tasks such as creating the user, setting up the email signature, and adding the user to groups based on the provided inputs.
-
-#### Offboarding Script
-
-The `offboard.sh` script automates the process of offboarding users in Google Workspace.
+### Offboarding Script
 
 **Syntax**:
 
 ```bash
-./offboard.sh [-h] [<offboard_user> <receiving_user>]
+./offboard.sh [-h] [<offboard_user> (<receiving_user>)]
 ```
 
 **Options**:
@@ -102,16 +112,13 @@ The `offboard.sh` script automates the process of offboarding users in Google Wo
 1. `offboard_user`: User email for the offboarding user.
 2. `receiving_user`: User email for the receiving user of any transfers.
 
-**Example**:
+### Reporting Script
+
+**Syntax**:
 
 ```bash
-./offboard.sh jane.doe@company.com admin@company.com
+./print.sh
 ```
-
-**Functionality**:
-
-- The script can be run with or without arguments. If arguments are not provided, it will prompt the user for input.
-- It performs tasks such as unsuspending the user account, resetting passwords, transferring drive and calendar data, and setting email forwarding.
 
 ### Detailed Steps for Onboarding
 
@@ -152,8 +159,14 @@ The `offboard.sh` script automates the process of offboarding users in Google Wo
 6. **Suspend User**:
    - Suspends the user account after all other steps are complete.
 
-### Notes
+## Notes
 
+- Both onboarding and offboarding scripts include interactive whiptail menus for selecting and executing tasks.
 - Ensure that `config.env` is correctly configured with all required paths and settings.
 - Review and test the scripts in a controlled environment before deploying them in production.
-- Regularly update GAMADV-XTD3 to ensure compatibility with the latest Google Workspace APIs.
+- Both scripts will regularly check for updates to GAM and GAMADV-XTD3 to ensure compatibility with the latest Google Workspace APIs.
+- Feel free to submit issues and pull requests to improve functionality and compatibility.
+
+## License
+
+This project is licensed under the MIT License.
