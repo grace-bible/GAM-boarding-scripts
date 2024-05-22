@@ -1,6 +1,6 @@
 #!/bin/bash
-# set -euo pipefail
-# IFS=$'\n\t'
+set -euo pipefail
+IFS=$'\n\t'
 
 source "$(dirname "$0")/config.env"
 
