@@ -4,6 +4,36 @@ IFS=$'\n\t'
 
 source "$(dirname "$0")/config.env"
 
+# Process options
+while getopts :h option; do
+    case $option in
+    [h])
+        echo "This script automates the process of onboarding new users in Google Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool to interact with Google Workspace APIs."
+        echo
+        echo "Syntax: onboard [-h] [<onboard_first_name> <onboard_last_name> <recovery_email> <onboard_user> <job_title> <manager_email_address> <birthday>]"
+        echo
+        echo "options:"
+        echo "  h                       Print this help."
+        echo "arguments:"
+        echo "  1 onboard_first_name        User first name (string)"
+        echo "  2 onboard_last_name         User last name (string)"
+        echo "  3 onboard_user              User new domain email (user@company.com)"
+        echo "  4 manager_email_address     User manager email (manager@company.com)"
+        echo "  5 recovery_email            Personal email for the onboarding user (email@domain.com)"
+        echo "  6 campus                    Assigned campus (AND, SW, CRK, MT, SYS)"
+        echo "  7 job_title                 User official job title, for use in signature (string)"
+        echo "  8 birthday                  User birthday (YYYY-MM-DD) for company birthdays calendar"
+        echo
+        exit 0
+        ;;
+    \?)
+        echo "Invalid option: -$OPTARG" 1>&2
+        echo ""
+        exit 1
+        ;;
+    esac
+done
+
 # Move execution to the script's parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
 parent_path=$(
@@ -82,36 +112,6 @@ confirm_continue() {
 
 confirm_inputs
 confirm_continue
-
-# Process options
-while getopts :h option; do
-    case $option in
-    [h])
-        echo "This script automates the process of onboarding new users in Google Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool to interact with Google Workspace APIs."
-        echo
-        echo "Syntax: onboard [-h] [<onboard_first_name> <onboard_last_name> <recovery_email> <onboard_user> <job_title> <manager_email_address> <birthday>]"
-        echo
-        echo "options:"
-        echo "  h                       Print this help."
-        echo "arguments:"
-        echo "  1 onboard_first_name        User first name (string)"
-        echo "  2 onboard_last_name         User last name (string)"
-        echo "  3 onboard_user              User new domain email (user@company.com)"
-        echo "  4 manager_email_address     User manager email (manager@company.com)"
-        echo "  5 recovery_email            Personal email for the onboarding user (email@domain.com)"
-        echo "  6 campus                    Assigned campus (AND, SW, CRK, MT, SYS)"
-        echo "  7 job_title                 User official job title, for use in signature (string)"
-        echo "  8 birthday                  User birthday (YYYY-MM-DD) for company birthdays calendar"
-        echo
-        exit 0
-        ;;
-    \?)
-        echo "Invalid Option: -$OPTARG" 1>&2
-        echo ""
-        exit 1
-        ;;
-    esac
-done
 
 get_info() {
     echo "Logging newly onboarded user's info for audit..."

@@ -4,6 +4,28 @@
 
 source "$(dirname "$0")/config.env"
 
+while getopts :h option; do
+    case $option in
+    [h])
+        echo "This script automates the process of onboarding new users in Google Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool to interact with Google Workspace APIs."
+        echo
+        echo "Syntax: offboard [-h] [<offboard_user> <receiving_user>]"
+        echo
+        echo "options:"
+        echo "  h                 Print this help."
+        echo "arguments:"
+        echo "  1 offboard_user     User email for the offboarding user"
+        echo "  2 receiving_user    User email for the receiving user of any transfers"
+        echo
+        exit 0
+        ;;
+    \?)
+        echo "Invalid option: -$OPTARG" 1>&2
+        exit 1
+        ;;
+    esac
+done
+
 # Move execution to the script's parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
 parent_path=$(
@@ -152,32 +174,6 @@ end_logger() {
     echo "Google Workspace boarding process complete"
     echo "========================================"
 }
-
-help_function() {
-    echo "This script automates the process of onboarding new users in Google Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool to interact with Google Workspace APIs."
-    echo
-    echo "Syntax: offboard [-h] [<offboard_user> <receiving_user>]"
-    echo
-    echo "options:"
-    echo "  h                 Print this help."
-    echo "arguments:"
-    echo "  1 offboard_user     User email for the offboarding user"
-    echo "  2 receiving_user    User email for the receiving user of any transfers"
-    echo
-}
-
-while getopts :h option; do
-    case $option in
-    [h])
-        help_function
-        exit
-        ;;
-    \?)
-        echo "Error: invalid option"
-        exit
-        ;;
-    esac
-done
 
 #Check for arguments
 if [[ $# -eq 2 ]]; then
