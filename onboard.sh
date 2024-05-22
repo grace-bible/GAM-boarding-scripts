@@ -2,6 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+source "$(dirname "$0")/config.env"
+
 # Move execution to the script's parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
 parent_path=$(
@@ -13,17 +15,10 @@ cd "$parent_path"
 # Initialize variables
 NOW=$(date '+%F')
 accountName=$(whoami)
-logDirectory=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
-logFile=$logDirectory/$NOW.log
-GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
-sigFile=/Users/joshmckenna/repos/GAM-boarding-scripts/dependencies/signature.txt
-TEMP_PASS=$(openssl rand -base64 12)
-
-onboard_manager=janineford@grace-bible.org,joshmckenna@grace-bible.org
-birthday_calendar=grace-bible.org_2lncaimlf8ua413n1v7pkmere4@group.calendar.google.com
+logFile=${LOG_DIR}/$NOW.log
 
 # Ensure the log directory exists
-mkdir -p "${logDirectory}"
+mkdir -p "${LOG_DIR}"
 
 # Start logging
 exec &> >(tee -a "$logFile")
@@ -147,12 +142,12 @@ update_info() {
 
 create_user() {
     echo "Creating new user..."
-    ${GAM3} create user ${onboard_user} firstname ${onboard_first_name} lastname ${onboard_last_name} org New\ users notify ${recovery_email},${onboard_manager} subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin
+    ${GAM3} create user ${onboard_user} firstname ${onboard_first_name} lastname ${onboard_last_name} org New\ users notify ${recovery_email},${CC_HR} subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin
     echo "...setting employment start date..."
     ${GAM3} update user ${onboard_user} Employment_History.Start_dates multivalued ${NOW} #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
     echo "...adding to staff birthday calendar..."
-    ${GAM3} calendar ${onboard_user} addevent attendee ${birthday_calendar} start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent #https://github.com/GAM-team/GAM/wiki/Command-Reference:-Calendars#gam-who-add--update-calendar-calendar-email
-    echo "Emailed credentials to $recovery_email and $onboard_manager"
+    ${GAM3} calendar ${onboard_user} addevent attendee ${BDAY_CAL} start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent #https://github.com/GAM-team/GAM/wiki/Command-Reference:-Calendars#gam-who-add--update-calendar-calendar-email
+    echo "Emailed credentials to $recovery_email and ${CC_HR}"
     echo "New user account created."
     echo ""
     echo ""
@@ -160,7 +155,7 @@ create_user() {
 
 set_signature() {
     echo "Setting up email signature..."
-    ${GAM3} user ${onboard_user} signature file ${sigFile} replace NAME "${onboard_first_name} ${onboard_last_name}" replace TITLE "${job_title}"
+    ${GAM3} user ${onboard_user} signature file ${SIG_FILE} replace NAME "${onboard_first_name} ${onboard_last_name}" replace TITLE "${job_title}"
     echo "Signature set."
     echo ""
     echo ""

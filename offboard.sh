@@ -2,9 +2,9 @@
 # set -euo pipefail
 # IFS=$'\n\t'
 
-#Heavily inspired by Sean Young's [deprovision.sh](https://github.com/seanism/IT/tree/5795238dc1309f245d939c89e975c805dda745f3/GAM)
+source "$(dirname "$0")/config.env"
 
-#Move execution to the script parent directory
+# Move execution to the script's parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
 parent_path=$(
     cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -14,15 +14,13 @@ cd "$parent_path"
 
 #Define variables
 NOW=$(date '+%F')
-
 accountName=$(whoami)
+logFile=${LOG_DIR}/$NOW.log
 
-logDirectory=/Users/joshmckenna/Library/CloudStorage/GoogleDrive-joshmckenna@grace-bible.org/Shared\ drives/IT\ subcommittee/_ARCHIVE/gam
-logFile=$logDirectory/$NOW.log
+# Ensure the log directory exists
+mkdir -p "${LOG_DIR}"
 
-GAM3=/Users/$accountName/bin/gamadv-xtd3/gam
-
-#Define available functions for the Whiptail menu
+# Define available functions for the Whiptail menu
 start_logger() {
     exec &> >(tee -a "$logFile")
     echo "========================================"
@@ -278,3 +276,5 @@ end_logger
 #Return to the pre-script working directory
 cleanup_tmp_files
 cd $INITIAL_WORKING_DIRECTORY
+
+#Heavily inspired by Sean Young's [deprovision.sh](https://github.com/seanism/IT/tree/5795238dc1309f245d939c89e975c805dda745f3/GAM)
