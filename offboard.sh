@@ -32,11 +32,11 @@ parent_path=$(
 )
 cd "$parent_path"
 
+source "$(dirname "$0")/config.env"
+
 #Define variables
 NOW=$(date '+%F')
 logFile=${LOG_DIR}/$NOW.log
-
-source "$(dirname "$0")/config.env"
 
 # Function to update GAM and GAMADV-XTD3
 update_gam() {
