@@ -113,8 +113,8 @@ confirm_inputs() {
 }
 
 confirm_continue() {
-    echo ""
     read -p "Press any key to continue... " -n1 -s
+    echo ""
     echo ""
 }
 
@@ -122,63 +122,81 @@ confirm_inputs
 confirm_continue
 
 get_info() {
+    echo "Entering get_info function at $(date)"
     echo "Logging newly onboarded user's info for audit..."
     ${GAM3} info user ${onboard_user}
+    echo ""
+    echo "Employee information retrieved."
+    echo "Exiting get_info function at $(date)"
+    echo ""
     echo ""
 }
 
 update_info() {
+    echo "Entering update_info function at $(date)"
     echo "Updating employee organization info..."
     echo ""
-    read -p "What type of employee is this? (Staff, Fellows, Mobilization, Seconded, etc.): " type_of_employee
+    echo "Please enter the type of employee (e.g., Staff, Fellows, Mobilization, Seconded, etc.)"
+    read -p "Type of employee: " type_of_employee
+    echo "Employee type set to: ${type_of_employee}"
     echo ""
     read -p "Enter all associated departments, separated by commas (e.g. Youth,College,Children): " -r input
     echo ""
     IFS=',' read -r -a departments <<<"$input"
     if [[ -z "${campus}" ]]; then
-        # The variable 'campus' is empty or not set.
         echo "The 'campus' variable is not set."
         read -p "Please enter the employee's campus: " -r campus
+        echo "Campus set to: ${campus}"
+    else
+        echo "Campus already set to: ${campus}"
     fi
     echo "${onboard_user} is designated as ${type_of_employee} at ${campus}, assigned to these departments: ${departments[*]}"
     confirm_continue
     ${GAM3} update user ${onboard_user} relation manager ${manager_email_address} organization description "${type_of_employee}" costcenter "${campus}" department "${departments}" title "${job_title}" primary
     echo "Employee information updated."
+    echo "Exiting update_info function at $(date)"
     echo ""
     echo ""
 }
 
 create_user() {
-    echo "Creating new user..."
+    echo "Entering create_user function at $(date)"
+    echo "Creating new user with email ${onboard_user}..."
     ${GAM3} create user ${onboard_user} firstname ${onboard_first_name} lastname ${onboard_last_name} org New\ users notify ${recovery_email},${CC_HR} subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin
     echo "...setting employment start date..."
     ${GAM3} update user ${onboard_user} Employment_History.Start_dates multivalued ${NOW} #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
     echo "...adding to staff birthday calendar..."
     ${GAM3} calendar ${onboard_user} addevent attendee ${BDAY_CAL} start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent #https://github.com/GAM-team/GAM/wiki/Command-Reference:-Calendars#gam-who-add--update-calendar-calendar-email
-    echo "Emailed credentials to $recovery_email and ${CC_HR}"
-    echo "New user account created."
+    echo "Emailed credentials to ${recovery_email} and ${CC_HR}"
+    echo "New user account for ${onboard_user} created."
+    echo "Exiting create_user function at $(date)"
     echo ""
     echo ""
 }
 
 set_signature() {
+    echo "Entering set_signature function at $(date)"
     echo "Setting up email signature..."
     ${GAM3} user ${onboard_user} signature file ${SIG_FILE} replace NAME "${onboard_first_name} ${onboard_last_name}" replace TITLE "${job_title}"
     echo "Signature set."
+    echo "Exiting set_signature function at $(date)"
     echo ""
     echo ""
-    view_signature
 }
 
 view_signature() {
+    echo "Entering view_signature function at $(date)"
     echo "Fetching the current user email signature..."
     echo "Here's the ${onboard_user}'s current email signature:"
     ${GAM3} user ${onboard_user} show signature format
+    echo "Current email signature retrieved."
+    echo "Exiting view_signature function at $(date)"
     echo ""
     echo ""
 }
 
 add_groups() {
+    echo "Entering add_groups function at $(date)"
     echo "Adding user to groups..."
 
     # Prompt for the list of groups
@@ -208,6 +226,9 @@ add_groups() {
     done
 
     echo "User added to all specified groups."
+    echo "Exiting add_groups function at $(date)"
+    echo ""
+    echo ""
 }
 
 end_logger() {
@@ -221,8 +242,8 @@ STEP_LIST=(
     "get_info" "Print info for an existing user account"
     "update_info" "Set details: manager, campus, department, job title"
     "create_user" "Create a new user account"
-    "view_signature" "Print an existing user email signature"
     "set_signature" "Configure a standard format email signature"
+    "view_signature" "Print an existing user email signature"
     "add_groups" "Add user to new groups"
 )
 
