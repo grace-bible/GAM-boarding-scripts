@@ -35,10 +35,3 @@ ${GAM3} all users print calendars >"$calendars_file"
 ${GAM3} print resources allfields >"$resources_file"
 ${GAM3} print teamdriveacls oneitemperrow >"$teamdrives_file"
 ${GAM3} print users query "isEnrolledIn2sv=False isSuspended=False" >"${date_prefix} MFA.csv"
-
-# Print the 5 Google Apps reports: a list of all of the hosted accounts that exist in your domain, the number of active and idle accounts, the amount of disk space occupied, etc.
-#${GAM3} report accounts >"${date_prefix} report accounts.csv"
-#${GAM3} report activity >"${date_prefix} report activity.csv"
-#${GAM3} report disk_space >"${date_prefix} report disk_space.csv"
-#${GAM3} report email_clients >"${date_prefix} report email_clients.csv"
-#${GAM3} report summary >"${date_prefix} report summary.csv"
