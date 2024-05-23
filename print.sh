@@ -29,11 +29,11 @@ ${GAM3} print orgs >"$orgs_file"
 ${GAM3} print users allfields >"$users_file"
 ${GAM3} print groups allfields >"$groups_file"
 ${GAM3} print aliases >"$aliases_file"
-#${GAM3} print roles >"$roles_file"
+${GAM3} print adminroles privileges >"$roles_file"
 ${GAM3} print admins >"$admins_file"
 ${GAM3} all users print calendars >"$calendars_file"
 ${GAM3} print resources allfields >"$resources_file"
-#${GAM3} all users teamdrives >"$teamdrives_file"
+${GAM3} print teamdriveacls oneitemperrow >"$teamdrives_file"
 ${GAM3} print users query "isEnrolledIn2sv=False isSuspended=False" >"${date_prefix} MFA.csv"
 
 # Print the 5 Google Apps reports: a list of all of the hosted accounts that exist in your domain, the number of active and idle accounts, the amount of disk space occupied, etc.
