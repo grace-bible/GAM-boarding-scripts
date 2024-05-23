@@ -361,7 +361,7 @@ while true; do
     set -e
 
     if [[ $exitstatus -ne 0 ]]; then
-        echo "User cancelled the selection. Exiting script."
+        echo "User cancelled the selection. Proceeding to exit."
         break
     fi
 
@@ -373,10 +373,19 @@ while true; do
             $STEP_FN_NAME
         done
     else
-        echo "No options selected. Exiting script."
+        echo "No options selected. Proceeding to exit."
         break
     fi
 done
+
+# If you cannot understand this, read Bash_Shell_Scripting/Conditional_Expressions again.
+if whiptail --title "Script exit" --yesno "Do you want to suspend the user before exiting?" 8 80; then
+    echo "Proceeding to suspend user $(date)..."
+    suspend
+    echo "Exit status was $?."
+else
+    echo "Skipping user suspension, exit status was $?."
+fi
 
 #get_info
 #reset_password
@@ -391,7 +400,7 @@ done
 #remove_groups
 #remove_drives
 #set_org_unit
-suspend
+#suspend
 end_logger
 
 #Return to the pre-script working directory
