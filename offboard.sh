@@ -82,9 +82,9 @@ echo ""
 # Define available functions for the Whiptail menu
 
 #Check for arguments
-if [[ $# -eq 2 ]]; then
+if [[ $# -ge 1 ]]; then
     offboard_user="$1"
-    receiving_user="$2"
+    receiving_user="${2:-}"
 else
     echo "You ran the script without adequate arguments..."
     echo ""
