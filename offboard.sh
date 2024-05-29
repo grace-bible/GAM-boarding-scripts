@@ -312,6 +312,7 @@ end_logger() {
     echo "Google Workspace boarding process complete"
     echo ""
     echo "========================================"
+    echo "========================================"
 }
 
 unsuspend
