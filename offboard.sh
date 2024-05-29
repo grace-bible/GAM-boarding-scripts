@@ -136,6 +136,8 @@ get_info() {
     ${GAM3} user $offboard_user show forwards
     echo "Showing Shared Drives for ${offboard_user}..."
     ${GAM3} user $offboard_user show teamdrives
+    echo "Showing calendars for ${offboard_user}..."
+    ${GAM3} user $offboard_user show calendars
     echo "${offboard_user}'s pre-offboarding info logged."
     echo "Exiting get_info function at $(date)"
     echo ""
