@@ -353,7 +353,7 @@ while true; do
             --separate-output \
             --title 'Offboarding' \
             "$whip_message" \
-            40 80 10 \
+            40 80 \
             "$entries_count" -- "${entry_options[@]}" \
             3>&1 1>&2 2>&3
     )
