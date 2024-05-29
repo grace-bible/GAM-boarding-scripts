@@ -376,16 +376,18 @@ while true; do
         echo "No options selected. Proceeding to exit."
         break
     fi
-done
 
-# If you cannot understand this, read Bash_Shell_Scripting/Conditional_Expressions again.
-if whiptail --title "Script exit" --yesno "Do you want to suspend the user before exiting?" 8 80; then
-    echo "Proceeding to suspend user $(date)..."
-    suspend
-    echo "Exit status was $?."
-else
-    echo "Skipping user suspension, exit status was $?."
-fi
+    # If you cannot understand this, read Bash_Shell_Scripting/Conditional_Expressions again.
+    if whiptail --title "Script exit" --yesno "Do you want to suspend the user before exiting?" 8 80; then
+        echo "Proceeding to suspend user $(date)..."
+        suspend
+        echo "Exit status was $?."
+        break
+    else
+        echo "Skipping user suspension, exit status was $?."
+        break
+    fi
+done
 
 #get_info
 #reset_password
