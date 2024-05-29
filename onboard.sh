@@ -278,9 +278,10 @@ end_logger() {
 
 # Whiptail dialog UI
 STEP_LIST=(
-    "get_info" "Print info for an existing user account"
-    "update_info" "Set details: manager, campus, department, job title"
     "create_user" "Create a new user account"
+    "get_info" "Print info for an existing user account"
+    "update_info" "Update details: manager, campus, department, title"
+    "update_marriage" "Update identity: name, primary email"
     "view_signature" "Print an existing user email signature"
     "set_signature" "Configure a standard format email signature"
     "add_groups" "Add user to new groups"
