@@ -312,8 +312,6 @@ end_logger() {
     echo "========================================"
 }
 
-#Start the global logger, begin functions
-start_logger
 unsuspend
 
 #Whiptail dialog UI
