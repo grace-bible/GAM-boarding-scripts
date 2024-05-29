@@ -124,7 +124,6 @@ unsuspend() {
     echo "Waiting for suspension to be removed..."
     sleep 10
     echo "Ready to continue!"
-    echo "Exiting unsuspend function at $(date)"
     echo ""
     echo ""
 }
