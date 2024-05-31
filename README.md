@@ -1,6 +1,6 @@
 # GAM Google Workspace User Management Scripts
 
-This repository offers Bash scripts that simplify user management in Google Workspace using GAMADV-XTD3 command-line tool, automating tasks like onboarding, offboarding, and updates for consistent and efficient administration.
+This repository offers Bash scripts that simplify user management in Google Workspace using GAM and GAMADV-XTD3 command-line tool, automating tasks like onboarding, offboarding, and updates for consistent and efficient administration.
 
 ## Prerequisites
 
@@ -27,57 +27,60 @@ This repository offers Bash scripts that simplify user management in Google Work
 
 ## Setup
 
-1. **Clone the Repository**:
+1. **Install Dependencies**:
+   Ensure that all required tools and dependencies are installed and updated. This includes GAM and GAMADV-XTD3, which can be installed using the following commands:
 
    ```bash
-   git clone <repository_url>
-   cd <repository_directory>
+   bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install)
+   bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh)
    ```
 
-2. **Configure `config.env`**:
+2. **Clone the Repository**:
 
-   - Create a `config.env` file with necessary environment variables such as `LOG_DIR`, `GAM_CMD`, `SIG_FILE`, `CC_HR`, `BDAY_CAL`, and `GAM_LAST_UPDATE`.
+   ```bash
+   git clone https://github.com/grace-bible/GAM-boarding-scripts.git
+   ```
+
+3. **Configure `config.env`**:
+
+   - Create a `config.env` file with necessary environment variables such as `GAM`, `GAM3`, `LOG_DIR`, `SIG_FILE`, `CC_HR`, `BDAY_CAL`, and `UPDATE_INTERVAL_DAYS`.
 
    ### Sample `config.env`
 
    ```bash
-   # Directory for logs
-   LOG_DIR=/path/to/log/directory
+   # This is a configuration file for onboarding and offboarding scripts
 
-   # Path to GAM executable
-   GAM3=/path/to/gamadv-xtd3/gam
+   # Path to the GAM and GAMADV-XTD3 executable
+   GAM=$HOME/bin/gam/gam
+   GAM3=$HOME/bin/gamadv-xtd3/gam
 
-   # Path to email signature file
-   SIG_FILE=/path/to/signature.txt
+   # Directory for storing logs
+   LOG_DIR=/path/goes/here
 
-   # HR email for notifications
-   CC_HR=hr@yourdomain.com
+   # Path to the email signature template file
+   SIG_FILE=/path/goes/here
 
-   # Birthday calendar ID
+   TEMP_PASS=$(openssl rand -base64 12)
+
+   # Email addresses to notify of onboarding
+   CC_HR=hiring.manager@company.com
+
+   # Your staff birthday calendar ID
    BDAY_CAL=your_calendar_id@group.calendar.google.com
 
-   # Last update date for GAM
-   GAM_LAST_UPDATE=2024-05-22
+   # Last update date for GAM and GAMADV-XTD3
+   GAM_LAST_UPDATE="2000-01-01"
 
    # Update interval in days
    UPDATE_INTERVAL_DAYS=7
-   ```
-
-3. **Install Dependencies**:
-   Ensure that all required tools and dependencies are installed and updated. This includes GAMADV-XTD3, which can be installed using the following commands:
-   ```bash
-   bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
-   bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
    ```
 
 ## Usage
 
 ### Onboarding Script
 
-**Syntax**:
-
 ```bash
-./onboard.sh [-h] [<onboard_first_name> <onboard_last_name> <recovery_email> <onboard_user> <manager_email_address> <campus> <job_title> (<birthday>)]
+./onboard.sh (-h) [<onboard_first_name> <onboard_last_name> <onboard_user> <manager_email_address> <recovery_email> <campus> <job_title> <birthday>]
 ```
 
 **Options**:
@@ -133,10 +136,8 @@ flowchart TD
 
 ### Offboarding Script
 
-**Syntax**:
-
 ```bash
-./offboard.sh [-h] [<offboard_user> (<receiving_user>)]
+./offboard.sh (-h) [<offboard_user> <receiving_user>]
 ```
 
 **Options**:
@@ -196,8 +197,6 @@ flowchart TD
 ```
 
 ### Reporting Script
-
-**Syntax**:
 
 ```bash
 ./print.sh
