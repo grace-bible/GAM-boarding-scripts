@@ -202,45 +202,6 @@ flowchart TD
 ./print.sh
 ```
 
-### Detailed Steps for Onboarding
-
-1. **Create User**:
-
-   - Sets a temporary password and notifies the user and HR.
-   - Sets the employment start date and adds the user's birthday to the company calendar.
-
-2. **Set Signature**:
-
-   - Configures the user's email signature based on a template.
-
-3. **Add Groups**:
-   - Adds the user to specified groups with appropriate permissions.
-
-### Detailed Steps for Offboarding
-
-1. **Get Info**:
-
-   - Logs the user's information for audit purposes.
-
-2. **Reset Password and Recovery Options**:
-
-   - Generates a random password and clears recovery options.
-
-3. **Deprovision**:
-
-   - Disables services and clears access tokens.
-
-4. **Transfer Data**:
-
-   - Transfers the user's Drive and Calendar data to another user.
-
-5. **Set Auto-Reply and Forwarding**:
-
-   - Configures an autoreply message and forwards incoming emails.
-
-6. **Suspend User**:
-   - Suspends the user account after all other steps are complete.
-
 ## Notes
 
 - Both onboarding and offboarding scripts include interactive whiptail menus for selecting and executing tasks.
