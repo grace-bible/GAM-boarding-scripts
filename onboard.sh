@@ -190,12 +190,25 @@ create_user() {
     ${GAM3} create user ${onboard_user} firstname ${onboard_first_name} lastname ${onboard_last_name} org New\ users notify ${recovery_email},${CC_HR} subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin
     echo "...setting employment start date..."
     ${GAM3} update user ${onboard_user} Employment_History.Start_dates multivalued ${NOW} #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
-    echo "...adding to staff birthday calendar..."
-    ${GAM3} calendar ${onboard_user} addevent attendee ${BDAY_CAL} start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent #https://github.com/GAM-team/GAM/wiki/Command-Reference:-Calendars#gam-who-add--update-calendar-calendar-email
     echo "Emailed credentials to ${recovery_email} and ${CC_HR}"
     echo "New user account for ${onboard_user} created."
     echo "Exiting create_user function at $(date)"
     echo ""
+    echo ""
+}
+
+add_birthday() {
+    echo "Entering add_birthday function at $(date)"
+
+    if [ -z "${birthday:-}" ]; then
+        read -p "Enter the user's birthday (YYYY-MM-DD): " birthday
+    fi
+
+    echo "Adding ${onboard_user}'s birthday to the staff birthday calendar..."
+    ${GAM3} calendar ${onboard_user} addevent attendee ${BDAY_CAL} start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent
+    echo "Birthday added to the calendar."
+
+    echo "Exiting add_birthday function at $(date)"
     echo ""
 }
 
@@ -293,6 +306,7 @@ end_logger() {
 # Whiptail dialog UI
 STEP_LIST=(
     "create_user" "Create a new user account"
+    "add_birthday" "Add user's birthday to the staff calendar"
     "get_info" "Print info for an existing user account"
     "update_info" "Update details: manager, campus, department, title"
     "view_signature" "Print an existing user email signature"
