@@ -372,7 +372,7 @@ while true; do
             --separate-output \
             --title 'Onboarding' \
             "$whip_message" \
-            20 78 10 \
+            16 80 4 \
             "${entry_options[@]}" \
             3>&1 1>&2 2>&3
     )
@@ -396,7 +396,7 @@ while true; do
         break
     fi
 
-    # Optionally, ask if the user wants to perform more tasks
+    sleep 5
     if ! whiptail --yesno "Do you want to perform more tasks?" 10 60; then
         break
     fi
