@@ -204,7 +204,7 @@ flowchart TD
 
 ## Notes
 
-- Both onboarding and offboarding scripts include interactive whiptail menus for selecting and executing tasks.
+- Both onboarding and offboarding scripts include interactive [whiptail](https://manpages.debian.org/jessie/whiptail/whiptail.1) TUI menus for selecting and executing tasks.
 - Ensure that `config.env` is correctly configured with all required paths and settings.
 - Review and test the scripts in a controlled environment before deploying them in production.
 - Both scripts will regularly check for updates to GAM and GAMADV-XTD3 to ensure compatibility with the latest Google Workspace APIs.
