@@ -157,19 +157,6 @@ get_info() {
     echo ""
 }
 
-update_marriage() {
-    echo "Entering update_marriage function at $(date)"
-    echo "Updating employee name and primary email..."
-    echo ""
-    read -p "First name: " new_fname
-    read -p "Last name: " new_lname
-    read -p "New email: " new_email
-    ${GAM3} update user ${onboard_user} firstname ${new_fname} lastname ${new_lname} primaryemail ${new_email}
-    echo "Exiting update_marriage function at $(date)"
-    echo ""
-    echo ""
-}
-
 update_info() {
     echo "Entering update_info function at $(date)"
     echo "Updating employee organization info..."
@@ -283,6 +270,19 @@ add_groups() {
     echo ""
 }
 
+update_marriage() {
+    echo "Entering update_marriage function at $(date)"
+    echo "Updating employee name and primary email..."
+    echo ""
+    read -p "First name: " new_fname
+    read -p "Last name: " new_lname
+    read -p "New email: " new_email
+    ${GAM3} update user ${onboard_user} firstname ${new_fname} lastname ${new_lname} primaryemail ${new_email}
+    echo "Exiting update_marriage function at $(date)"
+    echo ""
+    echo ""
+}
+
 end_logger() {
     echo "Google Workspace boarding process complete"
     echo ""
@@ -295,10 +295,10 @@ STEP_LIST=(
     "create_user" "Create a new user account"
     "get_info" "Print info for an existing user account"
     "update_info" "Update details: manager, campus, department, title"
-    "update_marriage" "Update identity: name, primary email"
     "view_signature" "Print an existing user email signature"
     "set_signature" "Configure a standard format email signature"
     "add_groups" "Add user to new groups"
+    "update_marriage" "Update identity: name, primary email"
 )
 
 entry_options=()
