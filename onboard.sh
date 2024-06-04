@@ -283,6 +283,40 @@ add_groups() {
     echo ""
 }
 
+add_calendars() {
+    echo "Entering add_calendars function at $(date)"
+    echo "Adding user to calendars..."
+
+    read -p "Please enter all calendar addresses separated by commas (e.g. calendar1@domain.com,calendar2@domain.com): " calendars_input
+    echo "Calendars input: ${calendars_input}"
+    calendars_input=$(echo "$calendars_input" | tr '[:upper:]' '[:lower:]')
+    IFS=',' read -r -a calendars <<<"$calendars_input"
+
+    for calendar in "${calendars[@]}"; do
+        read -p "Enter the permission level for $calendar (e.g. freebusy|read|editor|owner): " permission
+        permission=$(echo "$permission" | tr '[:upper:]' '[:lower:]')
+        echo "Adding ${onboard_user} to ${calendar} as ${permission}"
+        case "$permission" in
+        freebusy | read | editor | owner)
+            if ${GAM3} calendar ${calendar} add ${permission} ${onboard_user} sendnotifications false; then
+                echo "Successfully added ${onboard_user} to ${calendar} as a ${permission}."
+                ${GAM3} user ${onboard_user} add calendars ${calendar} color graphite hidden false selected false notification clear || echo "Error: Failed to add ${calendar} to ${onboard_user}'s sidebar" >&2
+            else
+                echo "Error: Failed to add ${onboard_user} to ${calendar}" >&2
+            fi
+            ;;
+        *)
+            echo "Invalid permission level: ${permission}. Valid options are freebusy | read | editor | owner." >&2
+            ;;
+        esac
+    done
+
+    echo "User added to all specified calendars."
+    echo "Exiting add_calendars function at $(date)"
+    echo ""
+    echo ""
+}
+
 update_marriage() {
     echo "Entering update_marriage function at $(date)"
     echo "Updating employee name and primary email..."
@@ -312,6 +346,7 @@ STEP_LIST=(
     "view_signature" "Print an existing user email signature"
     "set_signature" "Configure a standard format email signature"
     "add_groups" "Add user to new groups"
+    "add_calendars" "Add user to new calendars"
     "update_marriage" "Update identity: name, primary email"
 )
 
