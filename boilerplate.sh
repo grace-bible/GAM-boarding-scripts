@@ -14,6 +14,7 @@
 
 # Enable strict error handling
 set -euo pipefail
+IFS=$'\n\t'
 
 # Define color codes for output
 BOLD_RED='\033[1;31m'
