@@ -40,3 +40,5 @@ gam filetree.sh
 dependencies/whiptailmenu.bash
 config.env
 config.env-e
+getopts examples.sh
+scratchpad.sh
