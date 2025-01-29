@@ -608,6 +608,37 @@ main_menu() {
 # 6. Script Entry Point
 # -------------------------------
 
+handle_help "$@"
+
+initialize_logging | tee -a "$LOG_FILE"
+confirm_inputs | tee -a "$LOG_FILE"
+
+# Display the menu and handle user selection
+while true; do
+    echo | tee -a "$LOG_FILE"
+    main_menu
+    echo | tee -a "$LOG_FILE"
+    echo "----------------------------------------" | tee -a "$LOG_FILE"
+    echo | tee -a "$LOG_FILE"
+    read -r -p "Would you like to perform another operation? (y/n): " yn
+    echo | tee -a "$LOG_FILE"
+    case "$yn" in
+    [Yy]*) ;;
+    [Nn]*) task_exit ;;
+    *) print_warning "Please answer yes or no." ;;
+    esac
+    echo
+done
+
+
+
+
+
+
+
+
+
+
 
 
 entry_options=()
