@@ -503,9 +503,106 @@ end_logger() {
 # 4. Menu Setup
 # -------------------------------
 
+# Define menu options
+choices=(
+    "Get user pre-offboarding info for audit"
+    "Generate a random password"
+    "Erase password recovery options"
+    "Move user to Inactive OU"
+    "Set employee end date in directory"
+    "Clear app passwords, backup codes, and access tokens"
+    "Remove user from Global Address List (GAL)"
+    "Forward emails, grant delegate access recipient"
+    "Configure email autoreply"
+    "Transfer Google Drive files"
+    "Transfer Google Calendars and events"
+    "Remove from all Google Groups"
+    "Remove from all Shared Drives"
+)
+
+# Set the prompt
+PS3="Please select one of the options: "
+
 # -------------------------------
 # 5. Main Menu Function
 # -------------------------------
+
+main_menu() {
+    select choice in "${choices[@]}"; do
+        case "$choice" in
+        "${choices[0]}")
+            echo
+            print_and_execute get_info
+            break
+            ;;
+        "${choices[1]}")
+            echo
+            print_and_execute reset_password
+            break
+            ;;
+        "${choices[2]}")
+            echo
+            print_and_execute reset_recovery
+            break
+            ;;
+        "${choices[3]}")
+            echo
+            print_and_execute set_org_unit
+            break
+            ;;
+        "${choices[4]}")
+            echo
+            print_and_execute set_endDate
+            break
+            ;;
+        "${choices[5]}")
+            echo
+            print_and_execute deprovision
+            break
+            ;;
+        "${choices[6]}")
+            echo
+            print_and_execute remove_directory
+            break
+            ;;
+        "${choices[7]}")
+            echo
+            print_and_execute forward_emails
+            break
+            ;;
+        "${choices[8]}")
+            echo
+            print_and_execute set_autoreply
+            break
+            ;;
+        "${choices[9]}")
+            echo
+            print_and_execute transfer_drive
+            break
+            ;;
+        "${choices[10]}")
+            echo
+            print_and_execute transfer_calendar
+            break
+            ;;
+        "${choices[11]}")
+            echo
+            print_and_execute remove_groups
+            break
+            ;;
+        "${choices[12]}")
+            echo
+            print_and_execute remove_drives
+            break
+            ;;
+        *)
+            echo
+            print_warning "Invalid selection, please try again."
+            break
+            ;;
+        esac
+    done
+}
 
 # -------------------------------
 # 6. Script Entry Point
