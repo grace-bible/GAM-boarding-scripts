@@ -460,8 +460,9 @@ suspend() {
 }
 
 end_logger() {
-    echo "Google Workspace boarding process complete"
-    echo ""
+    echo
+    print_success "Google Workspace boarding process complete"
+    echo
     echo "========================================"
     echo "========================================"
 }
