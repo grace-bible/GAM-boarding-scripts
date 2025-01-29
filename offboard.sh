@@ -16,28 +16,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-while getopts :h option; do
-    case $option in
-    [h])
-        echo "This script automates the process of onboarding new users in Google Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool to interact with Google Workspace APIs."
-        echo
-        echo "Syntax: offboard [-h] [<offboard_user> <receiving_user>]"
-        echo
-        echo "options:"
-        echo "  h                 Print this help."
-        echo "arguments:"
-        echo "  1 offboard_user     User email for the offboarding user"
-        echo "  2 receiving_user    User email for the receiving user of any transfers"
-        echo
-        exit 0
-        ;;
-    \?)
-        echo "Invalid option: -$OPTARG" 1>&2
-        exit 1
-        ;;
-    esac
-done
-
 # Move execution to the script's parent directory
 INITIAL_WORKING_DIRECTORY=$(pwd)
 parent_path=$(
@@ -76,17 +54,78 @@ fi
 # Ensure the log directory exists
 mkdir -p "${LOG_DIR}"
 
-# Start logging
-exec &> >(tee -a "$logFile")
-echo "========================================"
-echo "Starting offboard.sh script at $(date)"
-echo "========================================"
-echo "GAM3 command alias set to ${GAM3}"
-${GAM3} version
-echo "Logging to ${logFile}"
-echo ""
+# Define global variables
+NOW=$(date '+%F %H.%M.%S')
+LOG_FILE="${LOG_DIR}/$NOW.log"
 
-# Define available functions for the Whiptail menu
+# -------------------------------
+# 2. Utility Functions
+# -------------------------------
+
+# Print HELP instructions.
+print_help() {
+    echo -e "${BOLD_WHITE}Usage:${RESET} $0 [OPTIONS]"
+    echo
+    echo -e "${BOLD_WHITE}Options:${RESET}"
+    echo "  -h, --help    Display this help message and exit."
+    echo
+    echo -e "${BOLD_WHITE}Description:${RESET}"
+    echo "  This script provides an interactive menu for onboarding new users in Google"
+    echo "  Workspace. It uses the Google Apps Manager (GAMADV-XTD3) command-line tool"
+    echo "  to interact with Google Workspace APIs."
+    echo
+    echo "  Without any options, it launches the interactive menu."
+    echo
+    echo -e "${BOLD_WHITE}Examples:${RESET}"
+    echo -e "  Display help:"
+    echo "    $0 -h | --h | --help | help"
+    echo
+    echo -e "  ${WHITE}Provide all arguments up-front:${RESET}"
+    echo -e "    ${BOLD_YELLOW}1${RESET} offboard_user      User email for the offboarding user"
+    echo -e "    ${BOLD_YELLOW}2${RESET} receiving_user     User email for the receiving user of any transfers"
+    echo
+    echo -e "  ${WHITE}Run the interactive menu:${RESET}"
+    echo "    $0"
+}
+
+# Initialize the log file.
+initialize_logging() {
+    # Create a new log file for each run of the script.
+    echo "========================================"
+    print_info "Starting $0 script at $(date)"
+    echo "========================================"
+    echo "GAM3 command alias set to ${GAM3}"
+    ${GAM3} version
+    echo "Logging to ${LOG_FILE}"
+    echo
+}
+
+# -------------------------------
+# 3. Task Functions
+# -------------------------------
+
+# Exits the script.
+task_exit() {
+    print_info "Exiting program."
+    exit 0
+}
+
+handle_help() {
+    if [ "$#" -eq 0 ]; then
+        print_help
+        exit 0
+    fi
+
+    case "$1" in
+    -h | --h | --help | help)
+        print_help
+        exit 0
+        ;;
+    *)
+        return 0
+        ;;
+    esac
+}
 
 #Check for arguments
 if [[ $# -ge 1 ]]; then
