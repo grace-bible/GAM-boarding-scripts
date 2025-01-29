@@ -346,21 +346,32 @@ forward_emails() {
 }
 
 set_autoreply() {
-    echo "Entering set_autoreply function at $(date)"
-    echo "Configuring email autoreply..."
+    echo
+    print_info "Entering set_autoreply function at $(date)"
+    echo
     company="Grace Bible Church"
     subject="No longer at $company"
-    echo "Subject: ${subject}"
     message="Thank you for contacting me. I am no longer working at $company. Please direct any future correspondence to $receiving_user."
-    echo "Message: ${message}"
-    startDate=$NOW
+    startDate=$(date +%F)
     endDate=$(date -v +1y +%F)
-    echo "Autoreply set until: ${endDate}"
-    ${GAM3} user $offboard_user vacation on subject "$subject" message "$message" startdate "$startDate" enddate "$endDate"
-    echo "Email autoreply for ${offboard_user} set."
+    print_info "Autoreply message will read:"
+    echo "Subject: ${subject}"
+    echo "Message: ${message}"
+    echo "Autoreply until: ${endDate}"
+    echo
+    print_prompt
+    confirm_continue
+    echo
+    echo "Configuring email autoreply..."
+    if user_autoreply=$(${GAM3} user "$offboard_user" vacation on subject "$subject" message "$message" startdate "$startDate" enddate "$endDate"); then
+        print_success "$user_autoreply"
+        echo "Email autoreply for ${offboard_user} set."
+    else
+        print_warning "$user_autoreply"
+    fi
+    echo
     echo "Exiting set_autoreply function at $(date)"
-    echo ""
-    echo ""
+    echo
 }
 
 transfer_drive() {
