@@ -226,12 +226,18 @@ reset_password() {
 }
 
 reset_recovery() {
-    echo "Entering reset_recovery function at $(date)"
-    echo "Erasing recovery options for $offboard_user..."
-    ${GAM3} update user $offboard_user recoveryemail "" recoveryphone ""
+    echo
+    print_info "Entering reset_recovery function at $(date)"
+    echo
+    echo "Erasing recovery options for ${offboard_user}..."
+    if user_recovery_reset=$(${GAM3} update user "$offboard_user" recoveryemail "" recoveryphone ""); then
+        print_success "$user_recovery_reset"
+    else
+        print_error "$user_recovery_reset"
+    fi
+    echo
     echo "Exiting reset_recovery function at $(date)"
-    echo ""
-    echo ""
+    echo
 }
 
 set_endDate() {
