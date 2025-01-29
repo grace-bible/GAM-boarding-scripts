@@ -257,16 +257,28 @@ set_endDate() {
 }
 
 deprovision() {
-    echo "Entering deprovision function at $(date)"
+    echo
+    set_org_unit
+    echo
+    print_info "Entering deprovision function at $(date)"
+    echo
     echo "Deprovisioning application passwords, backup verification codes, and access tokens..."
     echo "Disabling POP/IMAP access, signing out all devices, and turning off MFA..."
-    ${GAM3} user $offboard_user deprovision popimap signout turnoff2sv
+    if user_deprovision=$(${GAM3} user "$offboard_user" deprovision popimap signout); then #turnoff2sv
+        print_success "$user_deprovision"
+    else
+        print_error "$user_deprovision"
+    fi
+    echo
     echo "Generating new MFA backup codes..."
-    ${GAM3} user $offboard_user update backupcodes
-    echo "${offboard_user} has been deprovisioned."
+    if user_mfa_reset=$(${GAM3} user "$offboard_user" update backupcodes); then
+        print_success "$user_mfa_reset"
+    else
+        print_error "$user_mfa_reset"
+    fi
+    echo
     echo "Exiting deprovision function at $(date)"
-    echo ""
-    echo ""
+    echo
     #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Deprovision
 }
 
