@@ -241,13 +241,18 @@ reset_recovery() {
 }
 
 set_endDate() {
-    echo "Entering set_endDate function at $(date)"
+    echo
+    print_info "Entering set_endDate function at $(date)"
+    echo
     echo "Setting ${offboard_user} end date to today..."
-    ${GAM3} update user $offboard_user Employment_History.End_dates multivalued $NOW
-    echo "${offboard_user}'s end date set."
+    if user_end_date=$(${GAM3} update user "$offboard_user" Employment_History.End_dates multivalued "$NOW"); then
+        print_success "$user_end_date"
+    else
+        print_error "$user_end_date"
+    fi
+    echo
     echo "Exiting set_endDate function at $(date)"
-    echo ""
-    echo ""
+    echo
     #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
 }
 
