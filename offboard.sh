@@ -499,24 +499,19 @@ end_logger() {
     echo "========================================"
 }
 
-unsuspend
+# -------------------------------
+# 4. Menu Setup
+# -------------------------------
 
-#Whiptail dialog UI
-STEP_LIST=(
-    "get_info" "Get user pre-offboarding info for audit"
-    "reset_password" "Generate a random password"
-    "reset_recovery" "Erase password recovery options"
-    "set_endDate" "Set employee end date in directory"
-    "deprovision" "Clear app passwords, backup codes, and access tokens"
-    "remove_directory" "Remove user from Global Address List (GAL)"
-    "forward_emails" "Forward emails, grant delegate access recipient"
-    "set_autoreply" "Configure email autoreply"
-    "transfer_drive" "Transfer Google Drive files"
-    "transfer_calendar" "Transfer Google Calendars and events"
-    "remove_groups" "Remove from all Google Groups"
-    "remove_drives" "Remove from all Shared Drives"
-    "set_org_unit" "Move user to Inactive OU"
-)
+# -------------------------------
+# 5. Main Menu Function
+# -------------------------------
+
+# -------------------------------
+# 6. Script Entry Point
+# -------------------------------
+
+
 
 entry_options=()
 entries_count=${#STEP_LIST[@]}
