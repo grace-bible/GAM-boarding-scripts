@@ -375,14 +375,20 @@ set_autoreply() {
 }
 
 transfer_drive() {
-    echo "Entering transfer_drive function at $(date)"
+    echo
+    print_info "Entering transfer_drive function at $(date)"
+    echo
     echo "Transferring Drive..."
-    ${GAM3} user $offboard_user transfer drive $receiving_user
-    ${GAM3} create datatransfer $offboard_user gdrive $receiving_user
-    echo "${offboard_user}'s My Drive was transferred to ${receiving_user}"
+    if user_transfer_drive=$(${GAM3} create datatransfer "$offboard_user" gdrive "$receiving_user"); then
+        print_success "$user_transfer_drive"
+        echo "${offboard_user}'s My Drive was transferred to ${receiving_user}"
+    else
+        print_error "$user_transfer_drive"
+    fi
+    echo
     echo "Exiting transfer_drive function at $(date)"
-    echo ""
-    echo ""
+    echo
+    # ${GAM3} user "$offboard_user" transfer drive "$receiving_user"
     #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Drive-Transfer
 }
 
