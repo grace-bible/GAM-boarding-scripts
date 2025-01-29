@@ -283,13 +283,18 @@ deprovision() {
 }
 
 remove_directory() {
-    echo "Entering remove_directory function at $(date)"
+    echo
+    print_info "Entering remove_directory function at $(date)"
+    echo
     echo "Hiding ${offboard_user} from the Global Address List (GAL)..."
-    ${GAM3} update user $offboard_user gal off
-    echo "${offboard_user} has been removed from the Global Address List (GAL)."
+    if user_unlist_directory=$(${GAM3} update user "$offboard_user" gal off); then
+        print_success "$user_unlist_directory"
+    else
+        print_warning "$user_unlist_directory"
+    fi
+    echo
     echo "Exiting remove_directory function at $(date)"
-    echo ""
-    echo ""
+    echo
     #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands
 }
 
