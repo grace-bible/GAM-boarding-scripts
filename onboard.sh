@@ -456,52 +456,42 @@ main_menu() {
         "${choices[0]}")
             echo
             print_and_execute create_user
-            break
             ;;
         "${choices[1]}")
             echo
             print_and_execute add_birthday
-            break
             ;;
         "${choices[2]}")
             echo
             print_and_execute get_info
-            break
             ;;
         "${choices[3]}")
             echo
             print_and_execute update_info
-            break
             ;;
         "${choices[4]}")
             echo
             print_and_execute view_signature
-            break
             ;;
         "${choices[5]}")
             echo
             print_and_execute set_signature
-            break
             ;;
         "${choices[6]}")
             echo
             print_and_execute add_groups
-            break
             ;;
         "${choices[7]}")
             echo
             print_and_execute add_calendars
-            break
             ;;
         "${choices[8]}")
             echo
             print_and_execute update_marriage
-            break
             ;;
         *)
             echo
             print_warning "Invalid selection, please try again."
-            break
             ;;
         esac
     done
