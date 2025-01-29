@@ -1,4 +1,18 @@
 #!/bin/bash
+
+# =============================================================================
+# Script Name: script_template.sh
+# Description: A robust, user-friendly shell script template with interactive
+#              select menus and comprehensive error handling.
+# Author: Joshua McKenna
+# Date: 2025-01-29
+# =============================================================================
+
+# -------------------------------
+# 1. Configuration and Initialization
+# -------------------------------
+
+# Enable strict error handling
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -32,26 +46,18 @@ parent_path=$(
 )
 cd "$parent_path"
 
-source "$(dirname "$0")/config.env"
-
-#Define variables
-NOW=$(date '+%F')
-logFile=${LOG_DIR}/$NOW.log
-
-# Function to update GAM and GAMADV-XTD3
-update_gam() {
-    echo "Updating GAM and GAMADV-XTD3..."
-    bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
-    bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
-    # Update the last update date in the config.env file
-    local current_date=$(date +%F)
-    sed -i'' -e "s/^GAM_LAST_UPDATE=.*/GAM_LAST_UPDATE=\"$current_date\"/" "$(dirname "$0")/config.env"
-    export GAM_LAST_UPDATE="$current_date"
-}
+# Check if config.env exists
+if [ ! -f "$(dirname "$0")/config.env" ]; then
+    print_error "config.env file is missing from the $(dirname "$0") directory."
+    exit 1
+else
+    # shellcheck source=/dev/null
+    source "$(dirname "$0")/config.env"
+fi
 
 # Check the last update date
 if [[ -z "${GAM_LAST_UPDATE:-}" ]]; then
-    echo "GAM_LAST_UPDATE variable is not set in the config file."
+    print_info "GAM_LAST_UPDATE variable is not set in the config file."
     update_gam
 else
     LAST_UPDATE_DATE=$(date -j -f "%Y-%m-%d" "${GAM_LAST_UPDATE}" "+%s")
@@ -60,9 +66,10 @@ else
     DAYS_SINCE_LAST_UPDATE=$((SECONDS_DIFF / 86400))
 
     if [ "${DAYS_SINCE_LAST_UPDATE}" -ge "${UPDATE_INTERVAL_DAYS}" ]; then
+        print_info "Checking for updates."
         update_gam
     else
-        echo "GAM was updated ${DAYS_SINCE_LAST_UPDATE} days ago. Skipping update."
+        print_info "GAM was updated ${DAYS_SINCE_LAST_UPDATE} days ago. Skipping update."
     fi
 fi
 
