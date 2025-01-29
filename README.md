@@ -47,6 +47,8 @@ This repository offers Bash scripts that simplify user management in Google Work
 
    ### Sample `config.env`
 
+  At the top of the [sample_config.env](sample_config.env), you'll see the variables most likely to need customization at the top, with other global suggested variables further down. See below snippet for an example:
+
    ```bash
    # This is a configuration file for onboarding and offboarding scripts
 
@@ -75,6 +77,8 @@ This repository offers Bash scripts that simplify user management in Google Work
    UPDATE_INTERVAL_DAYS=7
    ```
 
+   See here a complete [sample_config.env](sample_config.env)
+
 ## Usage
 
 ### Onboarding Script
@@ -100,40 +104,6 @@ This repository offers Bash scripts that simplify user management in Google Work
 
 **`onboard.sh` Script Flowchart**:
 
-```mermaid
-flowchart TD
-    A[Start Onboarding Script] --> B{Check Arguments}
-    B --> |Arguments Provided| C[Set Variables from Arguments]
-    B --> |Arguments Missing| D[Prompt User for Input]
-    C --> E[Confirm Inputs]
-    D --> E[Confirm Inputs]
-    E --> F[Whiptail Menu]
-    F --> |create_user| G[Create User Account]
-    F --> |add_birthday| H[Add Birthday to Calendar]
-    F --> |get_info| I[Print User Info]
-    F --> |update_info| J[Update User Info]
-    F --> |view_signature| K[Print Email Signature]
-    F --> |set_signature| L[Configure Email Signature]
-    F --> |add_groups| M[Add User to Groups]
-    F --> |update_marriage| N[Update User Identity]
-    G --> O[Add Employment Start Date]
-    O --> P[Email Credentials to User]
-    P --> Q[Log User Info]
-    L --> R{View Signature?}
-    R --> |Yes| K
-    R --> |No| S[Skip Viewing Signature]
-    S --> Q
-    H --> Q
-    I --> Q
-    J --> Q
-    K --> Q
-    M --> Q
-    N --> Q
-    Q --> T[End Logging]
-    T --> U[Return to Initial Directory]
-    U --> V[Script Ends]
-```
-
 ### Offboarding Script
 
 ```bash
@@ -149,53 +119,6 @@ flowchart TD
 1. `offboard_user`: User email for the offboarding user.
 2. `receiving_user`: User email for the receiving user of any transfers.
 
-**`offboard.sh` Script Flowchart**:
-
-```mermaid
-flowchart TD
-    A[Start Offboarding Script] --> B{Check Arguments}
-    B --> |Arguments Provided| C[Set Variables from Arguments]
-    B --> |Arguments Missing| D[Prompt User for Input]
-    C --> E[Confirm Inputs]
-    D --> E[Confirm Inputs]
-    E --> F[Whiptail Menu]
-    F --> |unsuspend| G[Unsuspend User Account]
-    F --> |get_info| H[Log User Info]
-    F --> |reset_password| I[Generate Random Password]
-    F --> |reset_recovery| J[Erase Recovery Options]
-    F --> |set_endDate| K[Set Employment End Date]
-    F --> |deprovision| L[Deprovision User]
-    F --> |remove_directory| M[Remove from GAL]
-    F --> |forward_emails| N[Forward Emails and Delegate Access]
-    F --> |set_autoreply| O[Configure Email Autoreply]
-    F --> |transfer_drive| P[Transfer Google Drive]
-    F --> |transfer_calendar| Q[Transfer Google Calendars]
-    F --> |remove_groups| R[Remove from Groups]
-    F --> |remove_drives| S[Remove from Shared Drives]
-    F --> |set_org_unit| T[Move User to Inactive OU]
-    G --> U[Continue Offboarding Tasks]
-    H --> U
-    I --> U
-    J --> U
-    K --> U
-    L --> U
-    M --> U
-    N --> U
-    O --> U
-    P --> U
-    Q --> U
-    R --> U
-    S --> U
-    T --> U
-    U --> V{Suspend User?}
-    V --> |Yes| W[Suspend User]
-    V --> |No| X[Skip Suspension]
-    W --> Y[End Logging]
-    X --> Y
-    Y --> Z[Return to Initial Directory]
-    Z --> AA[Script Ends]
-```
-
 ### Reporting Script
 
 ```bash
@@ -204,10 +127,10 @@ flowchart TD
 
 ## Notes
 
-- Both onboarding and offboarding scripts include interactive [whiptail](https://manpages.debian.org/jessie/whiptail/whiptail.1) TUI menus for selecting and executing tasks.
-- Ensure that `config.env` is correctly configured with all required paths and settings.
-- Review and test the scripts in a controlled environment before deploying them in production.
+- Both onboarding and offboarding scripts include interactive, portable `select` TUI menus for selecting and executing tasks.
+- `config.env` simplifies the personalization of the scripts in a single location, including TUI colors and org-specific variables.
 - Both scripts will regularly check for updates to GAM and GAMADV-XTD3 to ensure compatibility with the latest Google Workspace APIs.
+- Review and test the scripts in a controlled environment before deploying them in production.
 - Feel free to submit issues and pull requests to improve functionality and compatibility.
 
 ## License
