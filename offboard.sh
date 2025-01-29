@@ -446,12 +446,17 @@ remove_drives() {
 }
 
 suspend() {
-    echo "Waiting for previous changes to take effect..."
+    echo
+    print_info "Waiting for last changes to take effect..."
     sleep 10
-    ${GAM3} update user $offboard_user suspended on
+    if user_suspend_result=$(${GAM3} update user "$offboard_user" suspended on); then
+        print_success "$user_suspend_result"
+    else
+        print_error "$user_suspend_result"
+    fi
+    echo
     echo "${offboard_user} was suspended."
-    echo ""
-    echo ""
+    echo
 }
 
 end_logger() {
