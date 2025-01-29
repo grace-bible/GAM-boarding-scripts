@@ -201,6 +201,38 @@ get_info() {
     echo "Exiting get_info function at $(date)"
     echo
 }
+
+unsuspend() {
+    echo
+    print_info "Entering unsuspend function at $(date)"
+    echo
+    echo "Unsuspending user account for offboarding..."
+    if user_unsuspend_result=$(${GAM3} update user "$offboard_user" suspended off); then
+        print_success "$user_unsuspend_result"
+    else
+        print_error "$user_unsuspend_result"
+        task_exit
+    fi
+    echo
+    echo "Waiting for suspension to be removed..."
+    sleep 10
+    echo "Exiting unsuspend function at $(date)"
+    echo
+}
+
+set_org_unit() {
+    echo
+    print_info "Entering set_org_unit function at $(date)"
+    echo
+    echo "Moving ${offboard_user} to offboarding OU..."
+    if user_ou_result=$(${GAM3} update org 'Inactive' move user "${offboard_user}"); then
+        print_success "$user_ou_result"
+    else
+        print_error "$user_ou_result"
+    fi
+    echo
+    echo "Exiting set_org_unit function at $(date)"
+    echo
 }
 
 reset_password() {
