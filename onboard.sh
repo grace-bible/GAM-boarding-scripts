@@ -508,12 +508,12 @@ confirm_inputs | tee -a "$LOG_FILE"
 
 # Display the menu and handle user selection
 while true; do
-    echo
+    echo | tee -a "$LOG_FILE"
     main_menu
     echo | tee -a "$LOG_FILE"
+    echo "----------------------------------------" | tee -a "$LOG_FILE"
     echo | tee -a "$LOG_FILE"
     read -r -p "Would you like to perform another operation? (y/n): " yn
-    echo
     case "$yn" in
     [Yy]*)
         ;;
@@ -524,7 +524,7 @@ while true; do
         print_warning "Please answer yes or no."
         ;;
     esac
-    echo
+    echo | tee -a "$LOG_FILE"
 done
 
 end_logger | tee -a "$LOG_FILE"
