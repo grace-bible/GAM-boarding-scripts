@@ -410,13 +410,19 @@ transfer_calendar() {
 }
 
 remove_groups() {
-    echo "Entering remove_groups function at $(date)"
+    echo
+    print_info "Entering remove_groups function at $(date)"
+    echo
     echo "Removing from groups..."
-    ${GAM3} user $offboard_user delete groups
-    echo "${offboard_user} removed from groups."
+    if user_delete_groups=$(${GAM3} user "$offboard_user" delete groups); then
+        print_success "$user_delete_groups"
+        echo "${offboard_user} removed from groups."
+    else
+        print_error "$user_delete_groups"
+    fi
+    echo
     echo "Exiting remove_groups function at $(date)"
-    echo ""
-    echo ""
+    echo
 }
 
 remove_drives() {
