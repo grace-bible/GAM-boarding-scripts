@@ -43,6 +43,7 @@ LOG_FILE="${LOG_DIR}/$NOW.log"
 
 # Print HELP instructions.
 print_help() {
+    echo
     echo -e "${BOLD_WHITE}Usage:${RESET} $0 [OPTIONS]"
     echo
     echo -e "${BOLD_WHITE}Options:${RESET}"
@@ -71,47 +72,15 @@ print_help() {
     echo
     echo -e "  ${WHITE}Run the interactive menu:${RESET}"
     echo "    $0"
+    echo
 }
-
-# Print ERROR messages in bold red.
-print_error() {
-    echo -e "${BOLD_RED}ERROR${RESET}: $1" >&2
-}
-
-# Print WARNING messages in bold yellow.
-print_warning() {
-    echo -e "${BOLD_YELLOW}WARNING${RESET}: $1"
-}
-
-# Print INFO messages in bold blue.
-print_info() {
-    echo -e "${BOLD_CYAN}INFO${RESET}: $1"
-}
-
-# Print SUCCESS messages in bold green.
-print_success() {
-    echo -e "${BOLD_GREEN}SUCCESS${RESET}: $1"
-}
-
-# Print SUCCESS messages in bold green.
-print_prompt() {
-    echo -e "${BOLD_PURPLE}ACTION REQUIRED${RESET}: $1"
-}
-
-# Print command before executing.
-print_and_execute() {
-    echo -e "${BOLD_WHITE}+ $*${RESET}" | tee -a "$LOG_FILE"
-    "$@" | tee -a "$LOG_FILE"
-}
-
-# Ensure the log directory exists
-mkdir -p "${LOG_DIR}"
 
 # Initialize the log file.
 initialize_logging() {
     # Create a new log file for each run of the script.
+    echo
     echo "========================================"
-    echo "Starting $0 script at $(date)"
+    print_info "Starting $0 script at $(date)"
     echo "========================================"
     echo "GAM3 command alias set to ${GAM3}"
     ${GAM3} version
@@ -125,6 +94,7 @@ initialize_logging() {
 
 # Exits the script.
 task_exit() {
+    echo
     print_info "Exiting program."
     exit 0
 }
@@ -161,7 +131,6 @@ if [[ $# -ge 4 ]]; then
 else
     echo
     print_warning "You ran the script without adequate arguments."
-    # Get user input for missing arguments
     echo
     read -r -p "Input the FIRST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_first_name
     echo
@@ -180,18 +149,11 @@ else
     echo
     read -r -p "Input the employee's JOB TITLE, followed by [ENTER]   " job_title
     echo
-    read -r -p "Input the employee's BIRTHDAY (YYYY-MM-DD), followed by [ENTER]   " birthday
-    echo
 fi
 
 confirm_continue() {
-    echo
-    print_prompt "Press any key to continue..."
-    echo
-    read -r -n1 -s
-    echo
-    echo "Continuing execution at $(date)"
-    echo
+    print_prompt
+    read -r -n1 -s -p "Press any key to continue..."
 }
 
 confirm_inputs() {
@@ -209,19 +171,18 @@ confirm_inputs() {
     echo
     print_success "Inputs confirmed."
     echo
-    sleep 2
 }
 
 get_info() {
     echo
     echo "Entering get_info function at $(date)"
-    echo "Logging newly onboarded user's info for audit..."
     echo
+    echo "Logging newly onboarded user's info for audit..."
     ${GAM3} info user "${onboard_user}"
     echo
     print_success "Employee information retrieved."
-    echo "Exiting get_info function at $(date)"
     echo
+    echo "Exiting get_info function at $(date)"
     echo
 }
 
@@ -230,13 +191,13 @@ update_info() {
     echo "Entering update_info function at $(date)"
     echo "Updating employee organization info..."
     echo
-    print_prompt "Please enter the type of employee (e.g., Staff, Fellows, Mobilization, Seconded, etc.)"
-    echo
-    read -r -p "Type of employee: " type_of_employee
+    print_prompt
+    read -r -p "Please enter the type of employee (e.g., Staff, Fellows, Mobilization, Seconded, etc.):   " type_of_employee
     echo
     print_info "Employee type set to: ${type_of_employee}"
     echo
-    read -p "Enter all associated departments, separated by commas (e.g. Youth,College,Children): " -r input
+    print_prompt
+    read -r -p "Enter all associated departments, separated by commas (e.g. Youth,College,Children):   " input
     echo
     IFS=',' read -r -a departments <<<"$input"
     if [[ -z "${campus}" ]]; then
@@ -322,10 +283,10 @@ set_signature() {
         print_and_execute view_signature
         ;;
     [Nn]*)
-        print_info "Signature view skipped."
+        print_info "Signature review skipped."
         ;;
     *)
-        print_warning "Invalid response. Signature view skipped."
+        print_warning "Invalid response. Signature review skipped."
         ;;
     esac
     echo
@@ -429,7 +390,7 @@ update_marriage() {
     read -r -p "Last name: " new_lname
     read -r -p "New email: " new_email
     echo
-    ${GAM3} update user "${onboard_user}" firstname "${new_fname}" lastname "${new_lname}" primaryemail "${new_email}"  || print_error "Failed to change ${onboard_user}'s name" >&2
+    ${GAM3} update user "${onboard_user}" firstname "${new_fname}" lastname "${new_lname}" primaryemail "${new_email}" || print_error "Failed to change ${onboard_user}'s name" >&2
     echo
     echo "Exiting update_marriage function at $(date)"
     echo
@@ -533,21 +494,21 @@ handle_help "$@"
 
 initialize_logging | tee -a "$LOG_FILE"
 confirm_inputs | tee -a "$LOG_FILE"
-confirm_continue
 
 # Display the menu and handle user selection
 while true; do
-    echo
     echo
     main_menu
     echo | tee -a "$LOG_FILE"
     echo | tee -a "$LOG_FILE"
     read -r -p "Would you like to perform another operation? (y/n): " yn
+    echo
     case "$yn" in
     [Yy]*) ;;
     [Nn]*) task_exit ;;
     *) print_warning "Please answer yes or no." ;;
     esac
+    echo
 done
 
 end_logger | tee -a "$LOG_FILE"
