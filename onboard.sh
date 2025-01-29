@@ -33,6 +33,27 @@ else
     source "$(dirname "$0")/config.env"
 fi
 
+# Check the last update date
+if [[ -z "${GAM_LAST_UPDATE:-}" ]]; then
+    print_info "GAM_LAST_UPDATE variable is not set in the config file."
+    update_gam
+else
+    LAST_UPDATE_DATE=$(date -j -f "%Y-%m-%d" "${GAM_LAST_UPDATE}" "+%s")
+    CURRENT_DATE_SECS=$(date -j -f "%Y-%m-%d" "${NOW}" "+%s")
+    SECONDS_DIFF=$((CURRENT_DATE_SECS - LAST_UPDATE_DATE))
+    DAYS_SINCE_LAST_UPDATE=$((SECONDS_DIFF / 86400))
+
+    if [ "${DAYS_SINCE_LAST_UPDATE}" -ge "${UPDATE_INTERVAL_DAYS}" ]; then
+        print_info "Checking for updates."
+        update_gam
+    else
+        print_info "GAM was updated ${DAYS_SINCE_LAST_UPDATE} days ago. Skipping update."
+    fi
+fi
+
+# Ensure the log directory exists
+mkdir -p "${LOG_DIR}"
+
 # Define global variables
 NOW=$(date '+%F %H.%M.%S')
 LOG_FILE="${LOG_DIR}/$NOW.log"
