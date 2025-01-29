@@ -515,9 +515,14 @@ while true; do
     read -r -p "Would you like to perform another operation? (y/n): " yn
     echo
     case "$yn" in
-    [Yy]*) ;;
-    [Nn]*) task_exit ;;
-    *) print_warning "Please answer yes or no." ;;
+    [Yy]*)
+        ;;
+    [Nn]*)
+        task_exit
+        ;;
+    *)
+        print_warning "Please answer yes or no."
+        ;;
     esac
     echo
 done
