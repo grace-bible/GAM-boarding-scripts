@@ -204,17 +204,25 @@ get_info() {
 }
 
 reset_password() {
-    echo "Entering reset_password function at $(date)"
+    echo
+    print_info "Entering reset_password function at $(date)"
+    echo
     echo "Generating random password..."
-    ${GAM3} update user $offboard_user password random
+    if user_pass_reset=$(${GAM3} update user "$offboard_user" password random); then
+        print_success "$user_pass_reset"
+    else
+        print_error "$user_pass_reset"
+    fi
+    echo
     echo "Requiring password change on next login..."
-    ${GAM3} update user $offboard_user changepassword on
+    ${GAM3} update user "$offboard_user" changepassword on
     sleep 2
-    ${GAM3} update user $offboard_user changepassword off
-    echo "${offboard_user}'s password changed."
+    ${GAM3} update user "$offboard_user" changepassword off
+    echo
+    print_success "${offboard_user}'s password changed."
+    echo
     echo "Exiting reset_password function at $(date)"
-    echo ""
-    echo ""
+    echo
 }
 
 reset_recovery() {
