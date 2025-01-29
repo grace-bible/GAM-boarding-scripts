@@ -106,8 +106,8 @@ initialize_logging() {
 
 # Exits the script.
 task_exit() {
-    print_info "Exiting program."
-    exit 0
+    echo -e "Exit last with code $?"
+    return 0
 }
 
 handle_help() {
@@ -621,101 +621,22 @@ while true; do
     echo "----------------------------------------" | tee -a "$LOG_FILE"
     echo | tee -a "$LOG_FILE"
     read -r -p "Would you like to perform another operation? (y/n): " yn
-    echo | tee -a "$LOG_FILE"
     case "$yn" in
-    [Yy]*) ;;
-    [Nn]*) task_exit ;;
-    *) print_warning "Please answer yes or no." ;;
+    [Yy]*)
+        ;;
+    [Nn]*)
+        task_exit
+        break
+        ;;
+    *)
+        print_warning "Please answer yes or no."
+        ;;
     esac
-    echo
+    echo | tee -a "$LOG_FILE"
 done
 
+end_logger | tee -a "$LOG_FILE"
 
-
-
-
-
-
-
-
-
-
-
-entry_options=()
-entries_count=${#STEP_LIST[@]}
-whip_message="Navigate with the TAB key, select with the SPACE key."
-
-# Generate options for the whiptail checklist
-for i in ${!STEP_LIST[@]}; do
-    if [ $((i % 2)) == 0 ]; then
-        entry_options+=($(($i / 2)))
-        entry_options+=("${STEP_LIST[$(($i + 1))]}")
-        entry_options+=('OFF')
-    fi
-done
-
-while true; do
-    # Temporarily disable 'set -e' to handle whiptail exit status
-    set +e
-    SELECTED_STEPS_RAW=$(
-        whiptail \
-            --checklist \
-            --separate-output \
-            --title 'Offboarding' \
-            "$whip_message" \
-            40 80 \
-            "$entries_count" -- "${entry_options[@]}" \
-            3>&1 1>&2 2>&3
-    )
-    exitstatus=$?
-    set -e
-
-    if [[ $exitstatus -ne 0 ]]; then
-        echo "User cancelled the selection. Proceeding to exit."
-        break
-    fi
-
-    if [[ ! -z "$SELECTED_STEPS_RAW" ]]; then
-        for STEP_FN_ID in ${SELECTED_STEPS_RAW[@]}; do
-            FN_NAME_ID=$(($STEP_FN_ID * 2))
-            STEP_FN_NAME="${STEP_LIST[$FN_NAME_ID]}"
-            echo "---Running ${STEP_FN_NAME}---"
-            $STEP_FN_NAME
-        done
-    else
-        echo "No options selected. Proceeding to exit."
-        break
-    fi
-
-    # If you cannot understand this, read Bash_Shell_Scripting/Conditional_Expressions again.
-    if whiptail --title "Script exit" --yesno "Do you want to suspend the user before exiting?" 8 80; then
-        echo "Proceeding to suspend user $(date)..."
-        suspend
-        echo "Exit status was $?."
-        break
-    else
-        echo "Skipping user suspension, exit status was $?."
-        break
-    fi
-done
-
-#get_info
-#reset_password
-#reset_recovery
-#set_endDate
-#deprovision
-#remove_directory
-#forward_emails
-#set_autoreply
-#transfer_drive
-#transfer_calendar
-#remove_groups
-#remove_drives
-#set_org_unit
-#suspend
-end_logger
-
-#Return to the pre-script working directory
-cd $INITIAL_WORKING_DIRECTORY
+cd "$INITIAL_WORKING_DIRECTORY"
 
 #Heavily inspired by Sean Young's [deprovision.sh](https://github.com/seanism/IT/tree/5795238dc1309f245d939c89e975c805dda745f3/GAM)
