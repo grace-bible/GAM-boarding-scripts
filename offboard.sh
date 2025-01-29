@@ -129,49 +129,39 @@ handle_help() {
 
 #Check for arguments
 if [[ $# -ge 1 ]]; then
+    echo
     offboard_user="$1"
     receiving_user="${2:-}"
+    echo
 else
+    echo
     echo "You ran the script without adequate arguments..."
-    echo ""
-    read -p "Input the email address of the USER TO OFFBOARD from Google Workspace, followed by [ENTER]   " offboard_user
+    # Get user input for missing arguments
+    echo
+    read -r -p "Input the email address of the USER TO OFFBOARD from Google Workspace, followed by [ENTER]   " offboard_user
     offboard_user=$(echo "$offboard_user" | tr '[:upper:]' '[:lower:]')
-    echo ""
-    read -p "Input the email address of the USER TO RECEIVE from ${offboard_user}, followed by [ENTER]   " receiving_user
+    echo
+    read -r -p "Input the email address of the USER TO RECEIVE from ${offboard_user}, followed by [ENTER]   " receiving_user
     receiving_user=$(echo "$receiving_user" | tr '[:upper:]' '[:lower:]')
-    echo ""
-    echo ""
+    echo
 fi
 
+confirm_continue() {
+    print_prompt
+    read -r -n1 -s -p "Press any key to continue..."
+}
+
 confirm_inputs() {
-    echo "Confirming inputs at $(date)"
+    echo
+    print_info "Confirming inputs at $(date)"
+    echo
     echo "Employee to offboard: ${offboard_user}"
     echo "Employee to receive transfers: ${receiving_user}"
-    echo "Inputs confirmed."
-    echo ""
-    sleep 2
-}
-
-confirm_continue() {
-    echo "Press any key to continue..."
-    read -n1 -s
-    echo "Continuing execution at $(date)"
-    echo ""
-}
-
-confirm_inputs
-confirm_continue
-
-unsuspend() {
-    echo "Entering unsuspend function at $(date)"
-    echo "Unsuspending user account for offboarding..."
-    ${GAM3} update user $offboard_user suspended off
-    echo ""
-    echo "Waiting for suspension to be removed..."
-    sleep 10
-    echo "Ready to continue!"
-    echo ""
-    echo ""
+    echo
+    confirm_continue
+    echo
+    print_success "Inputs confirmed."
+    echo
 }
 
 get_info() {
