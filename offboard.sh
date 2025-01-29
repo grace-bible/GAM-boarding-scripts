@@ -165,19 +165,42 @@ confirm_inputs() {
 }
 
 get_info() {
-    echo "Entering get_info function at $(date)"
-    echo "Logging ${offboard_user}'s pre-offboarding info for audit..."
-    ${GAM3} info user $offboard_user
+    echo
+    print_info "Entering get_info function at $(date)"
+    echo
+    echo "Fetching ${offboard_user}'s info for audit..."
+    if user_info=$(${GAM3} info user "$offboard_user"); then
+        print_success "$user_info"
+    else
+        print_warning "$user_info"
+    fi
+    echo
     echo "Showing email forwards for ${offboard_user}..."
-    ${GAM3} user $offboard_user show forwards
+    if user_forwards=$(${GAM3} user "$offboard_user" show forwards); then
+        print_success "$user_forwards"
+    else
+        print_warning "$user_forwards"
+    fi
+    echo
     echo "Showing Shared Drives for ${offboard_user}..."
-    ${GAM3} user $offboard_user show teamdrives
+    if user_teamdrives=$(${GAM3} user "$offboard_user" show teamdrives); then
+       print_success "$user_teamdrives"
+    else
+        print_warning "$user_teamdrives"
+    fi
+    echo
     echo "Showing calendars for ${offboard_user}..."
-    ${GAM3} user $offboard_user show calendars
+    if user_calendars=$(${GAM3} user "$offboard_user" show calendars); then
+        print_success "$user_calendars"
+    else
+        print_warning "$user_calendars"
+    fi
+    echo
     echo "${offboard_user}'s pre-offboarding info logged."
+    echo
     echo "Exiting get_info function at $(date)"
-    echo ""
-    echo ""
+    echo
+}
 }
 
 reset_password() {
