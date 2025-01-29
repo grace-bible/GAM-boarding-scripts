@@ -115,9 +115,8 @@ initialize_logging() {
 
 # Exits the script.
 task_exit() {
-    echo
-    print_info "Exiting program."
-    exit 0
+    echo -e "Exit last with code $?"
+    return 0
 }
 
 handle_help() {
