@@ -506,18 +506,15 @@ end_logger() {
 # Define menu options
 choices=(
     "Get user pre-offboarding info for audit"
-    "Generate a random password"
-    "Erase password recovery options"
-    "Move user to Inactive OU"
-    "Set employee end date in directory"
+    "Set employee end date"
+    "Erase password and pass recovery options"
     "Clear app passwords, backup codes, and access tokens"
-    "Remove user from Global Address List (GAL)"
-    "Forward emails, grant delegate access recipient"
-    "Configure email autoreply"
+    "Move to Inactive OU and erase from directory (GAL)"
+    "Forward, delegate, configure autoreply for email"
     "Transfer Google Drive files"
     "Transfer Google Calendars and events"
     "Remove from all Google Groups"
-    "Remove from all Shared Drives"
+    "Fully remove from all Shared Drive files"
 )
 
 # Set the prompt
@@ -533,71 +530,73 @@ main_menu() {
         "${choices[0]}")
             echo
             print_and_execute get_info
+            echo
             break
             ;;
         "${choices[1]}")
             echo
-            print_and_execute reset_password
+            print_and_execute set_endDate
+            echo
             break
             ;;
         "${choices[2]}")
             echo
+            print_and_execute reset_password
+            echo
             print_and_execute reset_recovery
+            echo
             break
             ;;
         "${choices[3]}")
             echo
-            print_and_execute set_org_unit
+            print_and_execute deprovision
+            echo
             break
             ;;
         "${choices[4]}")
             echo
-            print_and_execute set_endDate
+            print_and_execute set_org_unit
+            echo
+            print_and_execute remove_directory
+            echo
             break
             ;;
         "${choices[5]}")
             echo
-            print_and_execute deprovision
+            print_and_execute forward_emails
+            echo
+            print_and_execute set_autoreply
+            echo
             break
             ;;
         "${choices[6]}")
             echo
-            print_and_execute remove_directory
+            print_and_execute transfer_drive
+            echo
             break
             ;;
         "${choices[7]}")
             echo
-            print_and_execute forward_emails
+            print_and_execute transfer_calendar
+            echo
             break
             ;;
         "${choices[8]}")
             echo
-            print_and_execute set_autoreply
+            print_and_execute remove_groups
+            echo
             break
             ;;
         "${choices[9]}")
             echo
-            print_and_execute transfer_drive
-            break
-            ;;
-        "${choices[10]}")
-            echo
-            print_and_execute transfer_calendar
-            break
-            ;;
-        "${choices[11]}")
-            echo
-            print_and_execute remove_groups
-            break
-            ;;
-        "${choices[12]}")
-            echo
             print_and_execute remove_drives
+            echo
             break
             ;;
         *)
             echo
             print_warning "Invalid selection, please try again."
+            echo
             break
             ;;
         esac
