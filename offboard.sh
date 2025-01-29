@@ -393,14 +393,20 @@ transfer_drive() {
 }
 
 transfer_calendar() {
-    echo "Entering transfer_calendar function at $(date)"
+    echo
+    print_info "Entering transfer_calendar function at $(date)"
+    echo
     echo "Transferring Calendar..."
-    ${GAM3} calendar $offboard_user add owner $receiving_user
-    ${GAM3} add datatransfer $offboard_user calendar $receiving_user releaseresources
-    echo "${offboard_user}'s calendar was transferred to ${receiving_user}"
+    if user_transfer_cal=$(${GAM3} add datatransfer "$offboard_user" calendar "$receiving_user" releaseresources); then
+        print_success "$user_transfer_cal"
+        echo "${offboard_user}'s calendar was transferred to ${receiving_user}"
+    else
+        print_error "$user_transfer_cal"
+    fi
+    echo
     echo "Exiting transfer_calendar function at $(date)"
-    echo ""
-    echo ""
+    echo
+    # ${GAM3} calendar "$offboard_user" add owner "$receiving_user"
 }
 
 remove_groups() {
