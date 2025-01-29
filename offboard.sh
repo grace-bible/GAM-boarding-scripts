@@ -426,28 +426,23 @@ remove_groups() {
 }
 
 remove_drives() {
-    echo "Entering remove_drives function at $(date)"
+    echo
+    print_info "Entering remove_drives function at $(date)"
+    echo
     echo "Removing from Shared Drives..."
-    ${GAM3} redirect csv ./SharedDriveAccess.csv multiprocess user $offboard_user print shareddrives fields id,name
+    ${GAM3} redirect csv ./SharedDriveAccess.csv multiprocess user "$offboard_user" print shareddrives fields id,name
     ${GAM3} redirect stdout ./DeleteSharedDriveAccess.txt multiprocess redirect stderr stdout csv ./SharedDriveAccess.csv gam delete drivefileacl ~~id~~ ~~User~~
-    echo "${offboard_user} removed from Shared Drives."
+    echo
+    print_success "${offboard_user} removed from Shared Drives."
+    echo
     echo "Cleaning up temporary files..."
     rm ./SharedDriveAccess.csv
     rm ./DeleteSharedDriveAccess.txt
-    echo "Temporary files deleted."
+    echo
+    print_success "Temporary files deleted."
+    echo
     echo "Exiting remove_drives function at $(date)"
-    echo ""
-    echo ""
-}
-
-set_org_unit() {
-    echo "Entering set_org_unit function at $(date)"
-    echo "Moving $offboard_user to offboarding OU..."
-    ${GAM3} update org 'Inactive' move user $offboard_user
-    echo "${offboard_user} moved to Inactive OU."
-    echo "Exiting set_org_unit function at $(date)"
-    echo ""
-    echo ""
+    echo
 }
 
 suspend() {
