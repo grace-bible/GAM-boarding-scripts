@@ -299,22 +299,49 @@ remove_directory() {
 }
 
 forward_emails() {
-    echo "Entering forward_emails function at $(date)"
-    echo "Forwarding emails, granting delegate access to manager..."
-    ${GAM3} user $offboard_user print forwardingaddresses | ${GAM3} csv - gam user "~User" delete forwardingaddress "~forwardingEmail"
-    echo "User-configured forwarding for ${offboard_user} has been deleted..."
-    ${GAM3} user $offboard_user add forwardingaddress $receiving_user
-    echo "Email for ${offboard_user} has been forwarded to ${receiving_user}..."
-    ${GAM3} user $offboard_user forward on $receiving_user archive
-    echo "Set ${offboard_user} inbox to archive after forwarding..."
-    ${GAM3} user $offboard_user delegate to $receiving_user
-    echo "Email for ${offboard_user} has been delegated to ${receiving_user}..."
+    echo
+    print_info "Entering forward_emails function at $(date)"
+    echo
+    echo "Forwarding emails..."
+    if user_unforward=$(${GAM3} user "$offboard_user" print forwardingaddresses | ${GAM3} csv - gam user "~User" delete forwardingaddress "~forwardingEmail"); then
+        print_success "$user_unforward"
+        echo "User-configured forwarding for ${offboard_user} has been deleted."
+    else
+        print_warning "$user_unforward"
+    fi
+    echo
+    echo "...granting delegate access to $receiving_user..."
+    if user_forward_recipient=$(${GAM3} user "$offboard_user" add forwardingaddress "$receiving_user"); then
+        print_success "$user_forward_recipient"
+        echo "Email for ${offboard_user} has been forwarded to ${receiving_user}..."
+    else
+        print_error "$user_forward_recipient"
+    fi
+    echo
+    if archive_after_forward=$(${GAM3} user "$offboard_user" forward on "$receiving_user" archive); then
+        print_success "$archive_after_forward"
+        echo "Set ${offboard_user} inbox to archive after forwarding."
+    else
+        print_warning "$archive_after_forward"
+    fi
+    echo
+    if user_delegate_result=$(${GAM3} user "$offboard_user" delegate to "$receiving_user"); then
+        print_success "$user_delegate_result"
+        echo "Email for ${offboard_user} has been delegated to ${receiving_user}."
+    else
+        print_error "$user_delegate_result"
+    fi
+    echo
     echo "Deleting ${offboard_user}'s email aliases..."
-    ${GAM3} user $offboard_user delete aliases
-    echo "${offboard_user}'s email aliases were deleted."
+    if user_aliases_result=$(${GAM3} user "$offboard_user" delete aliases); then
+        print_success "$user_aliases_result"
+        echo "${offboard_user}'s email aliases were deleted."
+    else
+        print_error "$user_aliases_result"
+    fi
+    echo
     echo "Exiting forward_emails function at $(date)"
-    echo ""
-    echo ""
+    echo
     #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Forwarding
 }
 
