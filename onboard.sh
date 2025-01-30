@@ -365,6 +365,7 @@ add_calendars() {
     echo
     echo "Calendars input: ${calendars_input}"
     echo
+    #https://github.com/GAM-team/GAM/wiki/CalendarExamples
     calendars_input=$(echo "$calendars_input" | tr '[:upper:]' '[:lower:]')
     IFS=',' read -r -a calendars <<<"$calendars_input"
     for calendar in "${calendars[@]}"; do

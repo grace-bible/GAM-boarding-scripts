@@ -411,6 +411,7 @@ transfer_drive() {
     print_info "Entering transfer_drive function at $(date)"
     echo
     echo "Transferring Drive..."
+    # Runs the drive transfer locally instead of using the bulk transfer feature
     if user_transfer_drive=$(${GAM3} create datatransfer "$offboard_user" gdrive "$receiving_user"); then
         print_success "$user_transfer_drive"
         echo "${offboard_user}'s My Drive was transferred to ${receiving_user}"
