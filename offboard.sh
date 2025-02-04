@@ -111,6 +111,7 @@ initialize_logging() {
 
 # Print HELP instructions.
 print_help() {
+    echo
     echo -e "${BOLD_WHITE}Usage:${RESET} $0 [OPTIONS]"
     echo
     echo -e "${BOLD_WHITE}Options:${RESET}"
@@ -165,7 +166,8 @@ handle_help() {
 
 confirm_continue() {
     print_prompt
-    read -r -n1 -s -p "Press any key to continue..."
+    read -r -p "Press any key to continue..." -n1 -s
+    echo
 }
 
 confirm_inputs() {

@@ -129,14 +129,14 @@ print_help() {
     echo "    $0 -h | --h | --help | help"
     echo
     echo -e "  ${WHITE}Provide all arguments up-front:${RESET}"
-    echo -e "    ${BOLD_YELLOW}1${RESET} onboard_first_name        User first name (string)"
-    echo -e "    ${BOLD_YELLOW}2${RESET} onboard_last_name         User last name (string)"
-    echo -e "    ${BOLD_YELLOW}3${RESET} onboard_user              User new domain email (user@company.com)"
-    echo -e "    ${BOLD_YELLOW}4${RESET} manager_email_address     User manager email (manager@company.com)"
-    echo -e "    ${YELLOW}5${RESET} recovery_email            Personal email for the onboarding user (email@domain.com)"
-    echo -e "    ${YELLOW}6${RESET} campus                    Assigned campus (AND, SW, CRK, MT, SYS)"
-    echo -e "    ${YELLOW}7${RESET} job_title                 User official job title, for use in signature (string)"
-    echo -e "    ${YELLOW}8${RESET} birthday                  User birthday (YYYY-MM-DD) for company birthdays calendar"
+    echo -e "    ${BOLD_YELLOW}1${RESET} onboard_first_name         User first name (string)"
+    echo -e "    ${BOLD_YELLOW}2${RESET} onboard_last_name          User last name (string)"
+    echo -e "    ${BOLD_YELLOW}3${RESET} onboard_user               User new domain email (user@company.com)"
+    echo -e "    ${BOLD_YELLOW}4${RESET} manager_email_address      User manager email (manager@company.com)"
+    echo -e "    ${YELLOW}5${RESET} recovery_email                  Personal email for the onboarding user (email@domain.com)"
+    echo -e "    ${YELLOW}6${RESET} campus                          Assigned campus (AND, SW, CRK, MT, SYS)"
+    echo -e "    ${YELLOW}7${RESET} job_title                       User official job title, for use in signature (string)"
+    echo -e "    ${YELLOW}8${RESET} birthday                        User birthday (YYYY-MM-DD) for company birthdays calendar"
     echo
     echo -e "  ${WHITE}Run the interactive menu:${RESET}"
     echo "    $0"
@@ -172,7 +172,8 @@ handle_help() {
 
 confirm_continue() {
     print_prompt
-    read -r -n1 -s -p "Press any key to continue..."
+    read -r -p "Press any key to continue..." -n1 -s
+    echo
 }
 
 confirm_inputs() {
