@@ -215,6 +215,27 @@ get_info() {
     echo
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 update_info() {
     echo
     echo "Entering update_info function at $(date)"
@@ -426,6 +447,68 @@ update_marriage() {
     echo
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 end_logger() {
     echo
     print_success "Google Workspace boarding process complete"
@@ -512,6 +595,22 @@ main_menu() {
         esac
     done
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # -------------------------------
 # 6. Script Entry Point
