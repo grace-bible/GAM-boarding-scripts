@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # =============================================================================
-# Script Name: script_template.sh
-# Description: A robust, user-friendly shell script template with interactive
+# Script Name: onboard.sh
+# Description: A user-friendly shell script with interactive
 #              select menus and comprehensive error handling.
 # Author: Joshua McKenna
-# Date: 2025-01-24
+# Date: 2025-02-04
 # =============================================================================
 
 # -------------------------------
