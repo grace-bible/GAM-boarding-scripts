@@ -143,7 +143,16 @@ print_help() {
 
 # Exits the script.
 task_exit() {
-    echo -e "Exit last with code $?"
+    ret=$?
+    echo
+    if [ $ret -ne 0 ]; then
+        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        echo -e "Exit last with code $ret"
+        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    else
+        echo "========================================"
+        echo "========================================"
+    fi
     return 0
 }
 
@@ -519,6 +528,13 @@ end_logger() {
     echo "========================================"
 }
 
+trap 'print_warning "Interrupted by user."; exit 0' INT
+trap 'print_error "Error on line ${LINENO}"; exit 1' ERR
+# trap 'print_info "Exiting ${0}"; exit' EXIT
+
+exec 1> >(tee -a "${LOG_FILE}")
+exec 2> >(tee -a "${ERR_LOG}" "${LOG_FILE}")
+
 # -------------------------------
 # 4. Menu Setup
 # -------------------------------
@@ -629,16 +645,16 @@ main_menu() {
 
 handle_help "$@"
 
-initialize_logging | tee -a "$LOG_FILE"
-confirm_inputs | tee -a "$LOG_FILE"
+initialize_logging
+confirm_inputs
 
 # Display the menu and handle user selection
 while true; do
-    echo | tee -a "$LOG_FILE"
+    echo
     main_menu
-    echo | tee -a "$LOG_FILE"
-    echo "----------------------------------------" | tee -a "$LOG_FILE"
-    echo | tee -a "$LOG_FILE"
+    echo
+    echo "----------------------------------------"
+    echo
     read -r -p "Would you like to perform another operation? (y/n): " yn
     case "$yn" in
     [Yy]*)
@@ -648,13 +664,13 @@ while true; do
         break
         ;;
     *)
-        print_warning "Please answer yes or no."
+        print_warning "Please answer Y or N."
         ;;
     esac
-    echo | tee -a "$LOG_FILE"
+    echo
 done
 
-end_logger | tee -a "$LOG_FILE"
+end_logger
 
 cd "$INITIAL_WORKING_DIRECTORY"
 
