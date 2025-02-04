@@ -33,24 +33,6 @@ else
     source "$(dirname "$0")/config.env"
 fi
 
-# Check the last update date
-if [[ -z "${GAM_LAST_UPDATE:-}" ]]; then
-    print_info "GAM_LAST_UPDATE variable is not set in the config file."
-    update_gam
-else
-    LAST_UPDATE_DATE=$(date -j -f "%Y-%m-%d" "${GAM_LAST_UPDATE}" "+%s")
-    CURRENT_DATE_SECS=$(date -j -f "%Y-%m-%d" "${NOW}" "+%s")
-    SECONDS_DIFF=$((CURRENT_DATE_SECS - LAST_UPDATE_DATE))
-    DAYS_SINCE_LAST_UPDATE=$((SECONDS_DIFF / 86400))
-
-    if [ "${DAYS_SINCE_LAST_UPDATE}" -ge "${UPDATE_INTERVAL_DAYS}" ]; then
-        print_info "Checking for updates."
-        update_gam
-    else
-        print_info "GAM was updated ${DAYS_SINCE_LAST_UPDATE} days ago. Skipping update."
-    fi
-fi
-
 # Ensure the log directory exists
 mkdir -p "${LOG_DIR}"
 
@@ -86,17 +68,6 @@ print_help() {
     echo
     echo -e "  ${WHITE}Run the interactive menu:${RESET}"
     echo "    $0"
-}
-
-# Initialize the log file.
-initialize_logging() {
-    # Create a new log file for each run of the script.
-    echo "========================================"
-    print_info "Starting $0 script at $(date)"
-    echo "========================================"
-    echo "GAM3 command alias set to ${GAM3}"
-    ${GAM3} version
-    echo "Logging to ${LOG_FILE}"
     echo
 }
 
@@ -126,25 +97,6 @@ handle_help() {
         ;;
     esac
 }
-
-#Check for arguments
-if [[ $# -ge 1 ]]; then
-    echo
-    offboard_user="$1"
-    receiving_user="${2:-}"
-    echo
-else
-    echo
-    echo "You ran the script without adequate arguments..."
-    # Get user input for missing arguments
-    echo
-    read -r -p "Input the email address of the USER TO OFFBOARD from Google Workspace, followed by [ENTER]   " offboard_user
-    offboard_user=$(echo "$offboard_user" | tr '[:upper:]' '[:lower:]')
-    echo
-    read -r -p "Input the email address of the USER TO RECEIVE from ${offboard_user}, followed by [ENTER]   " receiving_user
-    receiving_user=$(echo "$receiving_user" | tr '[:upper:]' '[:lower:]')
-    echo
-fi
 
 confirm_continue() {
     print_prompt
