@@ -584,34 +584,50 @@ main_menu() {
         "${choices[0]}")
             echo
             print_and_execute create_user
+            echo
+            break
             ;;
         "${choices[1]}")
             echo
             print_and_execute get_info
+            echo
+            break
             ;;
         "${choices[2]}")
             echo
             print_and_execute update_marriage
+            echo
+            break
             ;;
         "${choices[3]}")
             echo
             print_and_execute update_info
+            echo
+            break
             ;;
         "${choices[4]}")
             echo
             print_and_execute view_signature
+            echo
+            break
             ;;
         "${choices[5]}")
             echo
             print_and_execute set_signature
+            echo
+            break
             ;;
         "${choices[6]}")
             echo
             print_and_execute provision_groups
+            echo
+            break
             ;;
         "${choices[7]}")
             echo
             print_and_execute provision_calendars
+            echo
+            break
             ;;
         "${choices[8]}")
             echo
@@ -632,6 +648,8 @@ main_menu() {
         *)
             echo
             print_warning "Invalid selection, please try again."
+            echo
+            break
             ;;
         esac
     done
