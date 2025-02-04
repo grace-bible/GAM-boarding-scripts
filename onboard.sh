@@ -675,6 +675,59 @@ main_menu() {
 # 6. Script Entry Point
 # -------------------------------
 
+# Check the last update date
+if [[ -z "${GAM_LAST_UPDATE:-}" ]]; then
+    print_info "GAM_LAST_UPDATE variable is not set in the config file."
+    update_gam
+else
+    LAST_UPDATE_DATE=$(date -j -f "%Y-%m-%d" "${GAM_LAST_UPDATE}" "+%s")
+    CURRENT_DATE_SECS=$(date -j -f "%Y-%m-%d" "${TODAY}" "+%s")
+    SECONDS_DIFF=$((CURRENT_DATE_SECS - LAST_UPDATE_DATE))
+    DAYS_SINCE_LAST_UPDATE=$((SECONDS_DIFF / 86400))
+
+    if [ "${DAYS_SINCE_LAST_UPDATE}" -ge "${UPDATE_INTERVAL_DAYS}" ]; then
+        print_info "Checking for updates."
+        update_gam
+    else
+        print_info "GAM was updated ${DAYS_SINCE_LAST_UPDATE} days ago. Skipping update."
+    fi
+fi
+
+#Check for arguments
+if [[ $# -ge 4 ]]; then
+    echo
+    onboard_first_name="$1"
+    onboard_last_name="$2"
+    onboard_user="$3"
+    manager_email_address="$4"
+    recovery_email="${5:-}"
+    campus="${6:-}"
+    job_title="${7:-}"
+    birthday="${8:-}"
+    echo
+else
+    echo
+    print_warning "You ran the script without adequate arguments."
+    echo
+    read -r -p "Input the FIRST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_first_name
+    echo
+    read -r -p "Input the LAST NAME of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_last_name
+    echo
+    read -r -p "Input the WORK EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]   " onboard_user
+    onboard_user=$(echo "$onboard_user" | tr '[:upper:]' '[:lower:]')
+    echo
+    read -r -p "Input the email address of the new user's MANAGER, followed by [ENTER]   " manager_email_address
+    manager_email_address=$(echo "$manager_email_address" | tr '[:upper:]' '[:lower:]')
+    echo
+    read -r -p "Input the PERSONAL RECOVERY EMAIL of the new user to be provisioned in Google Workspace, followed by [ENTER]   " recovery_email
+    recovery_email=$(echo "$recovery_email" | tr '[:upper:]' '[:lower:]')
+    echo
+    read -r -p "Input the CAMPUS of the new user to be provisioned in Google Workspace, followed by [ENTER]   " campus
+    echo
+    read -r -p "Input the employee's JOB TITLE, followed by [ENTER]   " job_title
+    echo
+fi
+
 handle_help "$@"
 
 initialize_logging
@@ -692,15 +745,19 @@ while true; do
     [Yy]*)
         ;;
     [Nn]*)
+        get_info
         task_exit
+        break
         ;;
     *)
-        print_warning "Please answer yes or no."
+        print_warning "Please answer Y or N."
         ;;
     esac
-    echo | tee -a "$LOG_FILE"
+    echo
 done
 
-end_logger | tee -a "$LOG_FILE"
+end_logger
 
 cd "$INITIAL_WORKING_DIRECTORY"
+
+#Heavily inspired by Sean Young's [deprovision.sh](https://github.com/seanism/IT/tree/5795238dc1309f245d939c89e975c805dda745f3/GAM)
