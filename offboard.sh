@@ -90,6 +90,25 @@ update_gam() {
 # 2. Utility Functions
 # -------------------------------
 
+validate_email() {
+    # Example: use a regular expression to check for valid email format
+    [[ $1 =~ ^[^@]+@[^@]+\.[^@]+$ ]] || print_error "Invalid email address: $1"
+}
+
+# Initialize the log file.
+initialize_logging() {
+    # Create a new log file for each run of the script.
+    echo
+    echo "========================================"
+    print_info "Starting $0 script at $(date)"
+    echo "========================================"
+    echo "GAM3 command alias set to ${GAM3}"
+    ${GAM3} version
+    echo "Bash version ${BASH_VERSION}"
+    echo "Logging to ${LOG_FILE}"
+    echo
+}
+
 # Print HELP instructions.
 print_help() {
     echo -e "${BOLD_WHITE}Usage:${RESET} $0 [OPTIONS]"
