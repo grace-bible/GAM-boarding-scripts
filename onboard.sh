@@ -275,32 +275,41 @@ update_info() {
 
 create_user() {
     echo
-    echo "Entering create_user function at $(date)"
+    print_info "Entering create_user function at $(date)"
+    echo
     echo "Creating new user with email ${onboard_user}..."
-    ${GAM3} create user "${onboard_user}" firstname "${onboard_first_name}" lastname "${onboard_last_name}" org New\ users notify "${recovery_email},${CC_HR}" subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin
+    if create_user_result=$(${GAM3} create user "${onboard_user}" firstname "${onboard_first_name}" lastname "${onboard_last_name}" org New\ users notify "${recovery_email},${CC_HR}" subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin); then
+        print_success "$create_user_result"
+    else
+        print_error "$create_user_result"
+    fi
+    echo
     echo "...setting employment start date..."
-    ${GAM3} update user "${onboard_user}" Employment_History.Start_dates multivalued "$(date '+%F')" #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
-    echo
-    print_success "Emailed credentials to ${recovery_email} and ${CC_HR}"
-    echo
-    print_success "New user account for ${onboard_user} created."
+    if user_startdate_result=$(${GAM3} update user "${onboard_user}" Employment_History.Start_dates multivalued "$(date '+%F')"); then
+        print_success "$user_startdate_result"
+    else
+        print_error "$user_startdate_result"
+    fi
     echo
     echo "Exiting create_user function at $(date)"
     echo
+    #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
 }
 
 add_birthday() {
     echo
-    echo "Entering add_birthday function at $(date)"
+    print_info "Entering add_birthday function at $(date)"
     echo
     if [ -z "${birthday:-}" ]; then
         read -r -p "Enter the user's birthday (YYYY-MM-DD): " birthday
         echo
     fi
     echo "Adding ${onboard_user}'s birthday to the staff birthday calendar..."
-    ${GAM3} calendar "${onboard_user}" addevent attendee "${BDAY_CAL}" start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent
-    echo
-    print_success "Birthday added to the calendar."
+    if user_birthday_result=$(${GAM3} calendar "${onboard_user}" addevent attendee "${BDAY_CAL}" start allday "${birthday}" end allday "${birthday}" summary "${onboard_first_name} ${onboard_last_name}'s birthday!" recurrence "RRULE:FREQ=YEARLY" transparency transparent); then
+        print_success "$user_birthday_result"
+    else
+        print_warning "$user_birthday_result"
+    fi
     echo
     echo "Exiting add_birthday function at $(date)"
     echo
@@ -308,28 +317,37 @@ add_birthday() {
 
 view_signature() {
     echo
-    echo "Entering view_signature function at $(date)"
-    echo "Fetching the current user email signature..."
-    print_info "Here's the ${onboard_user}'s current email signature:"
-    ${GAM3} user "${onboard_user}" show signature format
-    print_success "Current email signature retrieved."
+    print_info "Entering view_signature function at $(date)"
+    echo
+    echo "Fetching ${onboard_user}'s email signature..."
+    if get_signature_result=$(${GAM3} user "${onboard_user}" show signature format); then
+        print_success "$get_signature_result"
+    else
+        print_warning "$get_signature_result"
+    fi
+    echo
     echo "Exiting view_signature function at $(date)"
     echo
 }
 
 set_signature() {
     echo
-    echo "Entering set_signature function at $(date)"
+    print_info "Entering set_signature function at $(date)"
+    echo
     if [ -z "${job_title:-}" ]; then
-        read -p "Enter the onboard user's job title: " -r job_title
+        read -r -p "Enter the onboard user's job title: " job_title
+        echo
     fi
     echo "Setting up email signature..."
     # shellcheck disable=SC2153
-    ${GAM3} user "${onboard_user}" signature file "${SIG_FILE}" replace NAME "${onboard_first_name} ${onboard_last_name}" replace TITLE "${job_title}"
+    if set_signature_result=$(${GAM3} user "${onboard_user}" signature file "${SIG_FILE}" replace NAME "${onboard_first_name} ${onboard_last_name}" replace TITLE "${job_title}"); then
+        print_success "$set_signature_result"
+    else
+        print_error "$set_signature_result"
+    fi
     echo
-    print_success "Signature set."
-    echo
-    read -p "Do you want to view the signature to confirm it was set properly? (y/n): " -r response
+    print_prompt
+    read -r -p "Do you want to view the signature to confirm it was set properly? (y/n): " response
     echo
     case "$response" in
     [Yy]*)
@@ -339,7 +357,7 @@ set_signature() {
         print_info "Signature review skipped."
         ;;
     *)
-        print_warning "Invalid response. Signature review skipped."
+        print_warning "Signature review skipped due to invalid response."
         ;;
     esac
     echo
@@ -347,13 +365,12 @@ set_signature() {
     echo
 }
 
-add_groups() {
+provision_groups() {
     echo
-    echo "Entering add_groups function at $(date)"
+    print_info "Entering provision_groups function at $(date)"
     echo
-    print_prompt "Time to add the user to groups!"
-    echo
-    read -r -p "Please enter all groups separated by commas (e.g. group1@domain.com,group2@domain.com): " groups_input
+    print_prompt
+    read -r -p "Enter each group without spaces or quotes, separated by commas (e.g. group1@domain.com,group2@domain.com):   " groups_input
     echo
     echo "Groups input: ${groups_input}"
     groups_input=$(echo "$groups_input" | tr '[:upper:]' '[:lower:]')
@@ -364,40 +381,36 @@ add_groups() {
         permission=$(echo "$permission" | tr '[:upper:]' '[:lower:]')
         echo
         echo "Adding ${onboard_user} to ${group} as ${permission}"
-        echo
         case "$permission" in
         member | manager | owner)
-            if ${GAM3} update group "${group}" add "${permission}" user "${onboard_user}"; then
-                print_success "Successfully added ${onboard_user} to ${group} as a ${permission}."
+            if provision_group_result=$(${GAM3} update group "${group}" add "${permission}" user "${onboard_user}"); then
+                print_success "Added ${onboard_user} to ${group} as ${permission}."
+                echo "$provision_group_result"
                 echo
             else
-                print_error "Failed to add ${onboard_user} to ${group}" >&2
+                print_error "Failed to add ${onboard_user} to ${group} as ${permission}."
                 echo
             fi
             ;;
         *)
-            print_warning "Invalid permission level: ${permission}. Valid options are member | manager | owner." >&2
+            print_warning "${permission} is an invalid permission input. Please choose: member | manager | owner"
             echo
             ;;
         esac
     done
     echo
-    print_success "User added to groups."
-    echo
-    echo "Exiting add_groups function at $(date)"
+    echo "Exiting provision_groups function at $(date)"
     echo
 }
 
-add_calendars() {
+provision_calendars() {
     echo
-    echo "Entering add_calendars function at $(date)"
+    echo "Entering provision_calendars function at $(date)"
     echo
-    print_prompt "Time to add user to calendars!"
-    echo
-    read -r -p "Please enter all calendar addresses separated by commas (e.g. calendar1@domain.com,calendar2@domain.com): " calendars_input
+    print_prompt
+    read -r -p "Enter all calendar addresses without spaces or quotes, separated by commas (e.g. calendar1@domain.com,calendar2@domain.com):   " calendars_input
     echo
     echo "Calendars input: ${calendars_input}"
-    echo
     #https://github.com/GAM-team/GAM/wiki/CalendarExamples
     calendars_input=$(echo "$calendars_input" | tr '[:upper:]' '[:lower:]')
     IFS=',' read -r -a calendars <<<"$calendars_input"
@@ -407,30 +420,36 @@ add_calendars() {
         permission=$(echo "$permission" | tr '[:upper:]' '[:lower:]')
         echo
         echo "Adding ${onboard_user} to ${calendar} as ${permission}"
-        echo
         case "$permission" in
         freebusy | read | editor | owner)
-            if ${GAM3} calendar "${calendar}" add "${permission}" "${onboard_user}" sendnotifications false; then
-                print_success "Successfully added ${onboard_user} to ${calendar} as a ${permission}."
+            if provision_calendar_result=$(${GAM3} calendar "${calendar}" add "${permission}" "${onboard_user}" sendnotifications false); then
+                print_success "Successfully added ${onboard_user} to ${calendar} as ${permission}."
+                echo "$provision_calendar_result"
                 echo
-                ${GAM3} user "${onboard_user}" add calendars "${calendar}" color graphite hidden false selected false notification clear || print_error "Failed to add ${calendar} to ${onboard_user}'s sidebar" >&2
+                if add_calendar_result=$(${GAM3} user "${onboard_user}" add calendars "${calendar}" color graphite hidden false selected false notification clear); then
+                    print_success "Successfully made ${calendar} visible to ${onboard_user} in the sidebar."
+                    echo "$add_calendar_result"
+                    echo
+                else
+                    print_warning "Failed to make ${calendar} visible to ${onboard_user} in the sidebar."
+                    echo "$add_calendar_result"
+                    echo
+                fi
                 echo
             else
-                print_error "Failed to add ${onboard_user} to ${calendar}" >&2
+                print_error "Failed to add ${onboard_user} to ${calendar} as ${permission}."
+                echo "$provision_calendar_result"
                 echo
             fi
             ;;
         *)
-            print_warning "Invalid permission level: ${permission}. Valid options are freebusy | read | editor | owner." >&2
+            print_warning "Invalid permission level: ${permission}. Valid options are freebusy | read | editor | owner."
             echo
             ;;
         esac
     done
-
     echo
-    print_success "User added to calendars."
-    echo
-    echo "Exiting add_calendars function at $(date)"
+    echo "Exiting provision_calendars function at $(date)"
     echo
 }
 
@@ -438,13 +457,19 @@ update_marriage() {
     echo
     echo "Entering update_marriage function at $(date)"
     echo
-    print_prompt "Updating employee name and primary email..."
-    echo
+    print_prompt
     read -r -p "First name: " new_fname
     read -r -p "Last name: " new_lname
     read -r -p "New email: " new_email
     echo
-    ${GAM3} update user "${onboard_user}" firstname "${new_fname}" lastname "${new_lname}" primaryemail "${new_email}" || print_error "Failed to change ${onboard_user}'s name" >&2
+    echo "Changing user info:   "
+    echo " from: $onboard_first_name $onboard_last_name with address $onboard_user"
+    echo "   to: $new_fname $new_lname with address $new_email"
+    if update_marriage_result=$(${GAM3} update user "${onboard_user}" firstname "${new_fname}" lastname "${new_lname}" primaryemail "${new_email}"); then
+        print_success "$update_marriage_result"
+    else
+        print_error "$update_marriage_result"
+    fi
     echo
     echo "Exiting update_marriage function at $(date)"
     echo

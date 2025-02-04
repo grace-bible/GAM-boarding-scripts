@@ -283,9 +283,17 @@ reset_password() {
     fi
     echo
     echo "Requiring password change on next login..."
-    ${GAM3} update user "$offboard_user" changepassword on
+    if changepassword_on_result=$(${GAM3} update user "$offboard_user" changepassword on); then
+        print_success "$changepassword_on_result"
+    else
+        print_error "$changepassword_on_result"
+    fi
     sleep 2
-    ${GAM3} update user "$offboard_user" changepassword off
+    if changepassword_off_result=$(${GAM3} update user "$offboard_user" changepassword off); then
+        print_success "$changepassword_off_result"
+    else
+        print_error "$changepassword_off_result"
+    fi
     echo
     print_success "${offboard_user}'s password changed."
     echo
@@ -313,7 +321,7 @@ set_endDate() {
     print_info "Entering set_endDate function at $(date)"
     echo
     echo "Setting ${offboard_user} end date to today..."
-    if user_end_date=$(${GAM3} update user "$offboard_user" Employment_History.End_dates multivalued "$NOW"); then
+    if user_end_date=$(${GAM3} update user "$offboard_user" Employment_History.End_dates multivalued "$(date '+%F')"); then
         print_success "$user_end_date"
     else
         print_error "$user_end_date"
@@ -325,8 +333,6 @@ set_endDate() {
 }
 
 deprovision() {
-    echo
-    set_org_unit
     echo
     print_info "Entering deprovision function at $(date)"
     echo
@@ -381,7 +387,7 @@ forward_emails() {
     echo "...granting delegate access to $receiving_user..."
     if user_forward_recipient=$(${GAM3} user "$offboard_user" add forwardingaddress "$receiving_user"); then
         print_success "$user_forward_recipient"
-        echo "Email for ${offboard_user} has been forwarded to ${receiving_user}..."
+        echo "Email for ${offboard_user} has been forwarded to ${receiving_user}."
     else
         print_error "$user_forward_recipient"
     fi
@@ -427,7 +433,6 @@ set_autoreply() {
     echo "Message: ${message}"
     echo "Autoreply until: ${endDate}"
     echo
-    print_prompt
     confirm_continue
     echo
     echo "Configuring email autoreply..."
@@ -516,15 +521,19 @@ remove_drives() {
 
 suspend() {
     echo
-    print_info "Waiting for last changes to take effect..."
+    print_info "Entering suspend function at $(date)"
+    echo
+    echo "Waiting for last changes to take effect..."
     sleep 10
+    print_info "Suspending $offboard_user before exiting."
     if user_suspend_result=$(${GAM3} update user "$offboard_user" suspended on); then
-        print_success "$user_suspend_result"
+        print_success "${offboard_user} was suspended."
+        echo "$user_suspend_result"
     else
         print_error "$user_suspend_result"
     fi
     echo
-    echo "${offboard_user} was suspended."
+    echo "Exiting suspend function at $(date)"
     echo
 }
 
