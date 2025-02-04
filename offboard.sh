@@ -568,6 +568,8 @@ choices=(
     "Transfer Google Calendars and events"
     "Remove from all Google Groups"
     "Fully remove from all Shared Drive files"
+    "Standard offboard deprovisioning"
+    "Cancel"
 )
 
 # Set the prompt
@@ -595,7 +597,6 @@ main_menu() {
         "${choices[2]}")
             echo
             print_and_execute reset_password
-            echo
             print_and_execute reset_recovery
             echo
             break
@@ -609,7 +610,6 @@ main_menu() {
         "${choices[4]}")
             echo
             print_and_execute set_org_unit
-            echo
             print_and_execute remove_directory
             echo
             break
@@ -617,7 +617,6 @@ main_menu() {
         "${choices[5]}")
             echo
             print_and_execute forward_emails
-            echo
             print_and_execute set_autoreply
             echo
             break
@@ -643,6 +642,21 @@ main_menu() {
         "${choices[9]}")
             echo
             print_and_execute remove_drives
+            echo
+            break
+            ;;
+        "${choices[10]}")
+            echo
+            print_and_execute set_endDate
+            print_and_execute reset_password
+            print_and_execute reset_recovery
+            print_and_execute deprovision
+            print_and_execute set_org_unit
+            print_and_execute remove_directory
+            print_and_execute forward_emails
+            print_and_execute set_autoreply
+            print_and_execute transfer_drive
+            print_and_execute transfer_calendar
             echo
             break
             ;;

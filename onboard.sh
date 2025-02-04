@@ -559,14 +559,15 @@ exec 2> >(tee -a "${ERR_LOG}" "${LOG_FILE}")
 # Define menu options
 choices=(
     "Create a new user account"
-    "Add user's birthday to the staff calendar"
     "Print info for an existing user account"
+    "Update identity: name, primary email"
     "Update details: manager, campus, department, title"
     "Print an existing user email signature"
     "Configure a standard format email signature"
     "Add user to new groups"
     "Add user to new calendars"
-    "Update identity: name, primary email"
+    "Add user's birthday to the staff calendar"
+    "Standard onboard provisioning"
     "Cancel"
 )
 
@@ -586,11 +587,11 @@ main_menu() {
             ;;
         "${choices[1]}")
             echo
-            print_and_execute add_birthday
+            print_and_execute get_info
             ;;
         "${choices[2]}")
             echo
-            print_and_execute get_info
+            print_and_execute update_marriage
             ;;
         "${choices[3]}")
             echo
@@ -606,15 +607,27 @@ main_menu() {
             ;;
         "${choices[6]}")
             echo
-            print_and_execute add_groups
+            print_and_execute provision_groups
             ;;
         "${choices[7]}")
             echo
-            print_and_execute add_calendars
+            print_and_execute provision_calendars
             ;;
         "${choices[8]}")
             echo
-            print_and_execute update_marriage
+            print_and_execute add_birthday
+            echo
+            break
+            ;;
+        "${choices[9]}")
+            echo
+            print_and_execute create_user
+            print_and_execute update_info
+            print_and_execute set_signature
+            print_and_execute provision_groups
+            print_and_execute provision_calendars
+            echo
+            break
             ;;
         *)
             echo
