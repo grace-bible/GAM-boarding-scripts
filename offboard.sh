@@ -207,10 +207,10 @@ get_info() {
     print_info "Entering get_info function at $(date)"
     echo
     echo "Fetching ${offboard_user}'s info for audit..."
-    if user_info=$(${GAM3} info user "$offboard_user"); then
-        print_success "$user_info"
+    if user_info_result=$(${GAM3} info user "$offboard_user"); then
+        print_success "$user_info_result"
     else
-        print_warning "$user_info"
+        print_warning "$user_info_result"
     fi
     echo
     echo "Showing email forwards for ${offboard_user}..."
@@ -233,8 +233,6 @@ get_info() {
     else
         print_warning "$user_calendars"
     fi
-    echo
-    echo "${offboard_user}'s pre-offboarding info logged."
     echo
     echo "Exiting get_info function at $(date)"
     echo

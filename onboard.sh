@@ -204,12 +204,14 @@ confirm_inputs() {
 
 get_info() {
     echo
-    echo "Entering get_info function at $(date)"
+    print_info "Entering get_info function at $(date)"
     echo
-    echo "Logging newly onboarded user's info for audit..."
-    ${GAM3} info user "${onboard_user}"
-    echo
-    print_success "Employee information retrieved."
+    echo "Fetching ${onboard_user}'s info for audit..."
+    if user_info_result=$(${GAM3} info user "${onboard_user}"); then
+        print_success "$user_info_result"
+    else
+        print_warning "$user_info_result"
+    fi
     echo
     echo "Exiting get_info function at $(date)"
     echo
@@ -238,33 +240,34 @@ get_info() {
 
 update_info() {
     echo
-    echo "Entering update_info function at $(date)"
-    echo "Updating employee organization info..."
+    print_info "Entering update_info function at $(date)"
     echo
     print_prompt
-    read -r -p "Please enter the type of employee (e.g., Staff, Fellows, Mobilization, Seconded, etc.):   " type_of_employee
-    echo
+    read -r -p "Enter the type of employee (e.g., Staff, Fellows, Mobilization, Seconded, etc.):   " type_of_employee
     print_info "Employee type set to: ${type_of_employee}"
     echo
     print_prompt
-    read -r -p "Enter all associated departments, separated by commas (e.g. Youth,College,Children):   " input
-    echo
+    read -r -p "Enter all associated departments without spaces or quotes, separated by commas (e.g. Youth,College,Children):   " input
     IFS=',' read -r -a departments <<<"$input"
+    print_info "Employee department(s) set to: ${departments[*]}"
+    echo
     if [[ -z "${campus}" ]]; then
-        print_prompt "The 'campus' variable is not set. Please enter it now."
-        read -p "Please enter the employee's campus: " -r campus
+        print_prompt
+        read -r -p "Enter the employee's campus (e.g., Anderson, Southwood, Creekside, Midtown, Systems):   " campus
         echo "Campus set to: ${campus}"
     else
-        echo "Campus already set to: ${campus}"
+        echo "Campus set to: ${campus}"
     fi
     echo
     print_info "${onboard_user} is designated as ${type_of_employee} at ${campus}, assigned to these departments: ${departments[*]}"
     echo
     confirm_continue
     echo
-    ${GAM3} update user "${onboard_user}" relation manager "${manager_email_address}" organization description "${type_of_employee}" costcenter "${campus}" department "${departments[*]}" title "${job_title}" primary
-    echo
-    print_success "Employee information updated."
+    if update_user_result=$(${GAM3} update user "${onboard_user}" relation manager "${manager_email_address}" organization description "${type_of_employee}" costcenter "${campus}" department "${departments[*]}" title "${job_title}" primary); then
+        print_success "$update_user_result"
+    else
+        print_warning "$update_user_result"
+    fi
     echo
     echo "Exiting update_info function at $(date)"
     echo
