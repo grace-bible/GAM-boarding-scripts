@@ -38,7 +38,53 @@ mkdir -p "${LOG_DIR}"
 
 # Define global variables
 NOW=$(date '+%F %H.%M.%S')
+TODAY=$(date '+%F')
 LOG_FILE="${LOG_DIR}/$NOW.log"
+ERR_LOG="${LOG_DIR}/$NOW ERR.log"
+
+# Print ERROR messages in bold red.
+print_error() {
+    echo -e "${BOLD_RED}ERROR${RESET}: ${1:-}" >&2
+}
+
+# Print WARNING messages in bold yellow.
+print_warning() {
+    echo -e "${BOLD_YELLOW}WARNING${RESET}: ${1:-}"
+}
+
+# Print INFO messages in bold blue.
+print_info() {
+    echo -e "${BOLD_CYAN}INFO${RESET}: ${1:-}"
+}
+
+# Print SUCCESS messages in bold green.
+print_success() {
+    echo -e "${BOLD_GREEN}SUCCESS${RESET}: ${1:-}"
+}
+
+# Print SUCCESS messages in bold green.
+# shellcheck disable=SC2120
+print_prompt() {
+    echo -e "${BOLD_PURPLE}ACTION REQUIRED${RESET}: ${1:-}"
+}
+
+# Print COMMAND before executing.
+print_and_execute() {
+    echo -e "${BOLD_WHITE}+ $*${RESET}"
+    "$@"
+}
+
+# Function to update GAM and GAMADV-XTD3
+update_gam() {
+    print_info "Updating GAM and GAMADV-XTD3..."
+    bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install) -l
+    bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh) -l
+    # Update the last update date in the config.env file
+    local current_date
+    current_date=$(date +%F)
+    sed -i'' -e "s/^GAM_LAST_UPDATE=.*/GAM_LAST_UPDATE=\"$current_date\"/" "$(dirname "$0")/config.env"
+    export GAM_LAST_UPDATE="$current_date"
+}
 
 # -------------------------------
 # 2. Utility Functions
