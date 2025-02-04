@@ -38,6 +38,7 @@ mkdir -p "${LOG_DIR}"
 
 # Define global variables
 NOW=$(date '+%F %H.%M.%S')
+TODAY=$(date '+%F')
 LOG_FILE="${LOG_DIR}/$NOW.log"
 ERR_LOG="${LOG_DIR}/$NOW ERR.log"
 
