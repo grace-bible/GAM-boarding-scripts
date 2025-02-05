@@ -41,13 +41,13 @@ TODAY=$(date '+%F')
 mkdir -p "${LOG_DIR}/${TODAY}"/other
 
 # Define log variables
-LOG_FILE="${LOG_DIR}/${TODAY}/$NOW.log"
+LOG_FILE="${LOG_DIR}/${TODAY}/$NOW $(basename "$0").log"
 LOG_LEVEL="INFO"  # Set your log level here
 
 # Set default log paths
-ERR_LOG="${LOG_DIR}/${TODAY}/other/$NOW ERROR.log"
-WARN_LOG="${LOG_DIR}/${TODAY}/other/$NOW WARNING.log"
-INFO_LOG="${LOG_DIR}/${TODAY}/other/$NOW INFO.log"
+ERR_LOG="${LOG_DIR}/${TODAY}/other/$NOW $(basename "$0") ERROR.log"
+WARN_LOG="${LOG_DIR}/${TODAY}/other/$NOW $(basename "$0") WARNING.log"
+INFO_LOG="${LOG_DIR}/${TODAY}/other/$NOW $(basename "$0") INFO.log"
 
 # Determine the logging behavior based on LOG_LEVEL
 if [[ "$LOG_LEVEL" == "INFO" ]]; then
@@ -67,34 +67,34 @@ elif [[ "$LOG_LEVEL" == "DEBUG" || "$LOG_LEVEL" == "VERBOSE" ]]; then
     set -x  # Enable debug mode
     # Separate logs for DEBUG/VERBOSE
 else
-    echo "Unsupported LOG_LEVEL: $LOG_LEVEL. Defaulting ERR/WARN/INFO logs."
+    echo "Unsupported LOG_LEVEL: $LOG_LEVEL. Defaulting to separated ERR/WARN/INFO logs."
     # Use the defaults
 fi
 
 # Print ERROR messages in bold red.
 print_error() {
-    echo -e "${BOLD_RED}  ERROR  ${RESET}: ${1:-}" | tee -a "${ERR_LOG}" >&2
+    echo -e "${BOLD_RED}ERROR${RESET}: ${1:-}" | tee -a "${ERR_LOG}" >&2
 }
 
 # Print WARNING messages in bold yellow.
 print_warning() {
-    echo -e "${BOLD_YELLOW}  WARNING  ${RESET}: ${1:-}" | tee -a "${WARN_LOG}"
+    echo -e "${BOLD_YELLOW}WARNING${RESET}: ${1:-}" | tee -a "${WARN_LOG}"
 }
 
 # Print INFO messages in bold blue.
 print_info() {
-    echo -e "${BOLD_CYAN}  INFO  ${RESET}: ${1:-}" | tee -a "${INFO_LOG}"
+    echo -e "${BOLD_CYAN}INFO${RESET}: ${1:-}" | tee -a "${INFO_LOG}"
 }
 
 # Print SUCCESS messages in bold green.
 print_success() {
-    echo -e "${BOLD_GREEN}  SUCCESS  ${RESET}: ${1:-}" | tee -a "${INFO_LOG}"
+    echo -e "${BOLD_GREEN}SUCCESS${RESET}: ${1:-}" | tee -a "${INFO_LOG}"
 }
 
 # Print PROMPT messages in bold purple.
 # shellcheck disable=SC2120
 print_prompt() {
-    echo -e "${BOLD_PURPLE}  ACTION REQUIRED  ${RESET}: ${1:-}"
+    echo -e "${BOLD_PURPLE}ACTION REQUIRED${RESET}: ${1:-}"
 }
 
 # Print COMMAND before executing.
@@ -603,7 +603,7 @@ choices=(
 )
 
 # Set the prompt
-PS3="Please select one of the options: \n "
+PS3=$(printf 'Please select one of the options: \n  ')
 
 # -------------------------------
 # 5. Main Menu Function
@@ -756,27 +756,28 @@ fi
 
 
 
-unsuspend
+
 
 handle_help "$@"
 
-initialize_logging
+initialize_logging | tee -a "${INFO_LOG}"
+unsuspend | tee -a "${INFO_LOG}"
 confirm_inputs
 
 # Display the menu and handle user selection
 while true; do
     echo
     main_menu
-    echo
-    echo "----------------------------------------"
-    echo
+    echo | tee -a "${INFO_LOG}"
+    echo "----------------------------------------" | tee -a "${INFO_LOG}"
+    echo | tee -a "${INFO_LOG}"
     read -r -p "Would you like to perform another operation? (y/n): " yn
     case "$yn" in
     [Yy]*)
         ;;
     [Nn]*)
-        suspend
-        task_exit
+        suspend | tee -a "${INFO_LOG}"
+        task_exit | tee -a "${INFO_LOG}"
         break
         ;;
     *)
@@ -786,7 +787,7 @@ while true; do
     echo
 done
 
-end_logger
+end_logger | tee -a "${INFO_LOG}"
 
 cd "$INITIAL_WORKING_DIRECTORY"
 
