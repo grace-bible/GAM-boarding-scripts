@@ -26,51 +26,80 @@ cd "$parent_path"
 
 # Check if config.env exists
 if [ ! -f "$(dirname "$0")/config.env" ]; then
-    print_error "config.env file is missing from the $(dirname "$0") directory."
+    echo -e "'\033[1;31m'ERROR'\033[0m': config.env file is missing from the $(dirname "$0") directory."
     exit 1
 else
     # shellcheck source=/dev/null
     source "$(dirname "$0")/config.env"
 fi
 
-# Ensure the log directory exists
-mkdir -p "${LOG_DIR}"
-
-# Define global variables
+# Define time variables
 NOW=$(date '+%F %H.%M.%S')
 TODAY=$(date '+%F')
-LOG_FILE="${LOG_DIR}/$NOW.log"
-ERR_LOG="${LOG_DIR}/$NOW ERR.log"
+
+# Ensure the log directory exists
+mkdir -p "${LOG_DIR}/${TODAY}"/other
+
+# Define log variables
+LOG_FILE="${LOG_DIR}/${TODAY}/$NOW.log"
+LOG_LEVEL="INFO"  # Set your log level here
+
+# Set default log paths
+ERR_LOG="${LOG_DIR}/${TODAY}/other/$NOW ERROR.log"
+WARN_LOG="${LOG_DIR}/${TODAY}/other/$NOW WARNING.log"
+INFO_LOG="${LOG_DIR}/${TODAY}/other/$NOW INFO.log"
+
+# Determine the logging behavior based on LOG_LEVEL
+if [[ "$LOG_LEVEL" == "INFO" ]]; then
+    ERR_LOG="${LOG_FILE}"
+    WARN_LOG="${LOG_FILE}"
+    INFO_LOG="${LOG_FILE}"
+elif [[ "$LOG_LEVEL" == "WARNING" ]]; then
+    ERR_LOG="${LOG_FILE}"
+    WARN_LOG="${LOG_FILE}"
+    # INFO_LOG will remain as its default
+elif [[ "$LOG_LEVEL" == "ERROR" ]]; then
+    ERR_LOG="${LOG_FILE}"
+    # WARN_LOG and INFO_LOG will remain as their defaults
+elif [[ "$LOG_LEVEL" == "DEBUG" || "$LOG_LEVEL" == "VERBOSE" ]]; then
+    exec 19> "${LOG_FILE}"
+    BASH_XTRACEFD="19"
+    set -x  # Enable debug mode
+    # Separate logs for DEBUG/VERBOSE
+else
+    echo "Unsupported LOG_LEVEL: $LOG_LEVEL. Defaulting ERR/WARN/INFO logs."
+    # Use the defaults
+fi
 
 # Print ERROR messages in bold red.
 print_error() {
-    echo -e "${BOLD_RED}ERROR${RESET}: ${1:-}" >&2
+    echo -e "${BOLD_RED}  ERROR  ${RESET}: ${1:-}" | tee -a "${ERR_LOG}" >&2
 }
 
 # Print WARNING messages in bold yellow.
 print_warning() {
-    echo -e "${BOLD_YELLOW}WARNING${RESET}: ${1:-}"
+    echo -e "${BOLD_YELLOW}  WARNING  ${RESET}: ${1:-}" | tee -a "${WARN_LOG}"
 }
 
 # Print INFO messages in bold blue.
 print_info() {
-    echo -e "${BOLD_CYAN}INFO${RESET}: ${1:-}"
+    echo -e "${BOLD_CYAN}  INFO  ${RESET}: ${1:-}" | tee -a "${INFO_LOG}"
 }
 
 # Print SUCCESS messages in bold green.
 print_success() {
-    echo -e "${BOLD_GREEN}SUCCESS${RESET}: ${1:-}"
+    echo -e "${BOLD_GREEN}  SUCCESS  ${RESET}: ${1:-}" | tee -a "${INFO_LOG}"
 }
 
-# Print SUCCESS messages in bold green.
+# Print PROMPT messages in bold purple.
 # shellcheck disable=SC2120
 print_prompt() {
-    echo -e "${BOLD_PURPLE}ACTION REQUIRED${RESET}: ${1:-}"
+    echo -e "${BOLD_PURPLE}  ACTION REQUIRED  ${RESET}: ${1:-}"
 }
 
 # Print COMMAND before executing.
 print_and_execute() {
-    echo -e "${BOLD_WHITE}+ $*${RESET}"
+    echo -e "${BOLD_WHITE}  + $*  ${RESET}" | tee -a "${INFO_LOG}"
     "$@"
 }
 
@@ -149,11 +178,12 @@ print_help() {
 
 # Exits the script.
 task_exit() {
+    func=${FUNCNAME[0]}
     ret=$?
     echo
     if [ $ret -ne 0 ]; then
         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        echo -e "Exit last with code $ret"
+        echo -e "Exit $func with code $ret"
         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     else
         echo "========================================"
@@ -204,7 +234,7 @@ confirm_inputs() {
 
 get_info() {
     echo
-    print_info "Entering get_info function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Fetching ${offboard_user}'s info for audit..."
     if user_info_result=$(${GAM3} info user "$offboard_user"); then
@@ -234,13 +264,13 @@ get_info() {
         print_warning "$user_calendars"
     fi
     echo
-    echo "Exiting get_info function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 unsuspend() {
     echo
-    print_info "Entering unsuspend function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Unsuspending user account for offboarding..."
     if user_unsuspend_result=$(${GAM3} update user "$offboard_user" suspended off); then
@@ -252,13 +282,13 @@ unsuspend() {
     echo
     echo "Waiting for suspension to be removed..."
     sleep 10
-    echo "Exiting unsuspend function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 set_org_unit() {
     echo
-    print_info "Entering set_org_unit function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Moving ${offboard_user} to offboarding OU..."
     if user_ou_result=$(${GAM3} update org 'Inactive' move user "${offboard_user}"); then
@@ -267,13 +297,13 @@ set_org_unit() {
         print_error "$user_ou_result"
     fi
     echo
-    echo "Exiting set_org_unit function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 reset_password() {
     echo
-    print_info "Entering reset_password function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Generating random password..."
     if user_pass_reset=$(${GAM3} update user "$offboard_user" password random); then
@@ -297,13 +327,13 @@ reset_password() {
     echo
     print_success "${offboard_user}'s password changed."
     echo
-    echo "Exiting reset_password function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 reset_recovery() {
     echo
-    print_info "Entering reset_recovery function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Erasing recovery options for ${offboard_user}..."
     if user_recovery_reset=$(${GAM3} update user "$offboard_user" recoveryemail "" recoveryphone ""); then
@@ -312,13 +342,13 @@ reset_recovery() {
         print_error "$user_recovery_reset"
     fi
     echo
-    echo "Exiting reset_recovery function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 set_endDate() {
     echo
-    print_info "Entering set_endDate function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Setting ${offboard_user} end date to today..."
     if user_end_date=$(${GAM3} update user "$offboard_user" Employment_History.End_dates multivalued "$(date '+%F')"); then
@@ -327,14 +357,14 @@ set_endDate() {
         print_error "$user_end_date"
     fi
     echo
-    echo "Exiting set_endDate function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
     #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
 }
 
 deprovision() {
     echo
-    print_info "Entering deprovision function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Deprovisioning application passwords, backup verification codes, and access tokens..."
     echo "Disabling POP/IMAP access, signing out all devices, and turning off MFA..."
@@ -351,14 +381,14 @@ deprovision() {
         print_error "$user_mfa_reset"
     fi
     echo
-    echo "Exiting deprovision function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
     #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Deprovision
 }
 
 remove_directory() {
     echo
-    print_info "Entering remove_directory function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Hiding ${offboard_user} from the Global Address List (GAL)..."
     if user_unlist_directory=$(${GAM3} update user "$offboard_user" gal off); then
@@ -367,14 +397,14 @@ remove_directory() {
         print_warning "$user_unlist_directory"
     fi
     echo
-    echo "Exiting remove_directory function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
     #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands
 }
 
 forward_emails() {
     echo
-    print_info "Entering forward_emails function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Forwarding emails..."
     if user_unforward=$(${GAM3} user "$offboard_user" print forwardingaddresses | ${GAM3} csv - gam user "~User" delete forwardingaddress "~forwardingEmail"); then
@@ -414,14 +444,14 @@ forward_emails() {
         print_error "$user_aliases_result"
     fi
     echo
-    echo "Exiting forward_emails function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
     #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Gmail-Forwarding
 }
 
 set_autoreply() {
     echo
-    print_info "Entering set_autoreply function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     company="Grace Bible Church"
     subject="No longer at $company"
@@ -443,13 +473,13 @@ set_autoreply() {
         print_warning "$user_autoreply"
     fi
     echo
-    echo "Exiting set_autoreply function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 transfer_drive() {
     echo
-    print_info "Entering transfer_drive function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Transferring Drive..."
     # Runs the drive transfer locally instead of using the bulk transfer feature
@@ -460,7 +490,7 @@ transfer_drive() {
         print_error "$user_transfer_drive"
     fi
     echo
-    echo "Exiting transfer_drive function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
     # ${GAM3} user "$offboard_user" transfer drive "$receiving_user"
     #https://github.com/taers232c/GAMADV-XTD3/wiki/Users-Drive-Transfer
@@ -468,7 +498,7 @@ transfer_drive() {
 
 transfer_calendar() {
     echo
-    print_info "Entering transfer_calendar function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Transferring Calendar..."
     if user_transfer_cal=$(${GAM3} add datatransfer "$offboard_user" calendar "$receiving_user" releaseresources); then
@@ -478,14 +508,14 @@ transfer_calendar() {
         print_error "$user_transfer_cal"
     fi
     echo
-    echo "Exiting transfer_calendar function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
     # ${GAM3} calendar "$offboard_user" add owner "$receiving_user"
 }
 
 remove_groups() {
     echo
-    print_info "Entering remove_groups function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Removing from groups..."
     if user_delete_groups=$(${GAM3} user "$offboard_user" delete groups); then
@@ -495,13 +525,13 @@ remove_groups() {
         print_error "$user_delete_groups"
     fi
     echo
-    echo "Exiting remove_groups function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 remove_drives() {
     echo
-    print_info "Entering remove_drives function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Removing from Shared Drives..."
     ${GAM3} redirect csv ./SharedDriveAccess.csv multiprocess user "$offboard_user" print shareddrives fields id,name
@@ -515,13 +545,13 @@ remove_drives() {
     echo
     print_success "Temporary files deleted."
     echo
-    echo "Exiting remove_drives function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 suspend() {
     echo
-    print_info "Entering suspend function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Waiting for last changes to take effect..."
     sleep 10
@@ -533,7 +563,7 @@ suspend() {
         print_error "$user_suspend_result"
     fi
     echo
-    echo "Exiting suspend function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
@@ -549,8 +579,8 @@ trap 'print_warning "Interrupted by user."; exit 0' INT
 trap 'print_error "Error on line ${LINENO}"; exit 1' ERR
 # trap 'print_info "Exiting ${0}"; exit' EXIT
 
-exec 1> >(tee -a "${LOG_FILE}")
-exec 2> >(tee -a "${ERR_LOG}" "${LOG_FILE}")
+# exec 1> >(tee -a "${LOG_FILE}")
+# exec 2> >(tee -a "${ERR_LOG}" "${LOG_FILE}")
 
 # -------------------------------
 # 4. Menu Setup
@@ -573,7 +603,7 @@ choices=(
 )
 
 # Set the prompt
-PS3="Please select one of the options: "
+PS3="Please select one of the options: \n "
 
 # -------------------------------
 # 5. Main Menu Function
@@ -701,7 +731,7 @@ if [[ $# -ge 1 ]]; then
     echo
 else
     echo
-    print_warning "You ran the script without adequate arguments..."
+    print_warning "You ran the script without adequate arguments."
     echo
     read -r -p "Input the email address of the USER TO OFFBOARD from Google Workspace, followed by [ENTER]   " offboard_user
     offboard_user=$(echo "$offboard_user" | tr '[:upper:]' '[:lower:]')

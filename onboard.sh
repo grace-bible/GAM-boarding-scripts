@@ -26,51 +26,80 @@ cd "$parent_path"
 
 # Check if config.env exists
 if [ ! -f "$(dirname "$0")/config.env" ]; then
-    print_error "config.env file is missing from the $(dirname "$0") directory."
+    echo -e "'\033[1;31m'ERROR'\033[0m': config.env file is missing from the $(dirname "$0") directory."
     exit 1
 else
     # shellcheck source=/dev/null
     source "$(dirname "$0")/config.env"
 fi
 
-# Ensure the log directory exists
-mkdir -p "${LOG_DIR}"
-
-# Define global variables
+# Define time variables
 NOW=$(date '+%F %H.%M.%S')
 TODAY=$(date '+%F')
-LOG_FILE="${LOG_DIR}/$NOW.log"
-ERR_LOG="${LOG_DIR}/$NOW ERR.log"
+
+# Ensure the log directory exists
+mkdir -p "${LOG_DIR}/${TODAY}"/other
+
+# Define log variables
+LOG_FILE="${LOG_DIR}/${TODAY}/$NOW.log"
+LOG_LEVEL="INFO"  # Set your log level here
+
+# Set default log paths
+ERR_LOG="${LOG_DIR}/${TODAY}/other/$NOW ERR.log"
+WARN_LOG="${LOG_DIR}/${TODAY}/other/$NOW WARN.log"
+INFO_LOG="${LOG_DIR}/${TODAY}/other/$NOW INFO.log"
+
+# Determine the logging behavior based on LOG_LEVEL
+if [[ "$LOG_LEVEL" == "INFO" ]]; then
+    ERR_LOG="${LOG_FILE}"
+    WARN_LOG="${LOG_FILE}"
+    INFO_LOG="${LOG_FILE}"
+elif [[ "$LOG_LEVEL" == "WARNING" ]]; then
+    ERR_LOG="${LOG_FILE}"
+    WARN_LOG="${LOG_FILE}"
+    # INFO_LOG will remain as its default
+elif [[ "$LOG_LEVEL" == "ERROR" ]]; then
+    ERR_LOG="${LOG_FILE}"
+    # WARN_LOG and INFO_LOG will remain as their defaults
+elif [[ "$LOG_LEVEL" == "DEBUG" || "$LOG_LEVEL" == "VERBOSE" ]]; then
+    exec 19> "${LOG_FILE}"
+    BASH_XTRACEFD="19"
+    set -x  # Enable debug mode
+    # Separate logs for DEBUG/VERBOSE
+else
+    echo "Unsupported LOG_LEVEL: $LOG_LEVEL. Defaulting ERR/WARN/INFO logs."
+    # Use the defaults
+fi
 
 # Print ERROR messages in bold red.
 print_error() {
-    echo -e "${BOLD_RED}ERROR${RESET}: ${1:-}" >&2
+    echo -e "${BOLD_RED}  ERROR  ${RESET}: ${1:-}" | tee -a "${ERR_LOG}" >&2
 }
 
 # Print WARNING messages in bold yellow.
 print_warning() {
-    echo -e "${BOLD_YELLOW}WARNING${RESET}: ${1:-}"
+    echo -e "${BOLD_YELLOW}  WARNING  ${RESET}: ${1:-}" | tee -a "${WARN_LOG}"
 }
 
 # Print INFO messages in bold blue.
 print_info() {
-    echo -e "${BOLD_CYAN}INFO${RESET}: ${1:-}"
+    echo -e "${BOLD_CYAN}  INFO  ${RESET}: ${1:-}" | tee -a "${INFO_LOG}"
 }
 
 # Print SUCCESS messages in bold green.
 print_success() {
-    echo -e "${BOLD_GREEN}SUCCESS${RESET}: ${1:-}"
+    echo -e "${BOLD_GREEN}  SUCCESS  ${RESET}: ${1:-}" | tee -a "${INFO_LOG}"
 }
 
-# Print SUCCESS messages in bold green.
+# Print PROMPT messages in bold purple.
 # shellcheck disable=SC2120
 print_prompt() {
-    echo -e "${BOLD_PURPLE}ACTION REQUIRED${RESET}: ${1:-}"
+    echo -e "${BOLD_PURPLE}  ACTION REQUIRED  ${RESET}: ${1:-}"
 }
 
 # Print COMMAND before executing.
 print_and_execute() {
-    echo -e "${BOLD_WHITE}+ $*${RESET}"
+    echo -e "${BOLD_WHITE}  + $*  ${RESET}" | tee -a "${INFO_LOG}"
     "$@"
 }
 
@@ -149,11 +178,12 @@ print_help() {
 
 # Exits the script.
 task_exit() {
+    func=${FUNCNAME[0]}
     ret=$?
     echo
     if [ $ret -ne 0 ]; then
         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        echo -e "Exit last with code $ret"
+        echo -e "Exit $func with code $ret"
         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     else
         echo "========================================"
@@ -204,7 +234,7 @@ confirm_inputs() {
 
 get_info() {
     echo
-    print_info "Entering get_info function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Fetching ${onboard_user}'s info for audit..."
     if user_info_result=$(${GAM3} info user "${onboard_user}"); then
@@ -213,7 +243,7 @@ get_info() {
         print_warning "$user_info_result"
     fi
     echo
-    echo "Exiting get_info function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
@@ -240,7 +270,7 @@ get_info() {
 
 update_info() {
     echo
-    print_info "Entering update_info function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     print_prompt
     read -r -p "Enter the type of employee (e.g., Staff, Fellows, Mobilization, Seconded, etc.):   " type_of_employee
@@ -269,13 +299,13 @@ update_info() {
         print_warning "$update_user_result"
     fi
     echo
-    echo "Exiting update_info function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 create_user() {
     echo
-    print_info "Entering create_user function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Creating new user with email ${onboard_user}..."
     if create_user_result=$(${GAM3} create user "${onboard_user}" firstname "${onboard_first_name}" lastname "${onboard_last_name}" org New\ users notify "${recovery_email},${CC_HR}" subject "[ACTION REQUIRED] Activate your #email# email" password "${TEMP_PASS}" notifypassword "${TEMP_PASS}" changepasswordatnextlogin); then
@@ -291,14 +321,14 @@ create_user() {
         print_error "$user_startdate_result"
     fi
     echo
-    echo "Exiting create_user function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
     #https://github.com/GAM-team/GAM/wiki/GAM3DirectoryCommands#setting-custom-user-schema-fields-at-create-or-update
 }
 
 add_birthday() {
     echo
-    print_info "Entering add_birthday function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     if [ -z "${birthday:-}" ]; then
         read -r -p "Enter the user's birthday (YYYY-MM-DD): " birthday
@@ -311,13 +341,13 @@ add_birthday() {
         print_warning "$user_birthday_result"
     fi
     echo
-    echo "Exiting add_birthday function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 view_signature() {
     echo
-    print_info "Entering view_signature function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     echo "Fetching ${onboard_user}'s email signature..."
     if get_signature_result=$(${GAM3} user "${onboard_user}" show signature format); then
@@ -326,13 +356,13 @@ view_signature() {
         print_warning "$get_signature_result"
     fi
     echo
-    echo "Exiting view_signature function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 set_signature() {
     echo
-    print_info "Entering set_signature function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     if [ -z "${job_title:-}" ]; then
         read -r -p "Enter the onboard user's job title: " job_title
@@ -361,13 +391,13 @@ set_signature() {
         ;;
     esac
     echo
-    echo "Exiting set_signature function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 provision_groups() {
     echo
-    print_info "Entering provision_groups function at $(date)"
+    print_info "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     print_prompt
     read -r -p "Enter each group without spaces or quotes, separated by commas (e.g. group1@domain.com,group2@domain.com):   " groups_input
@@ -399,13 +429,13 @@ provision_groups() {
         esac
     done
     echo
-    echo "Exiting provision_groups function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 provision_calendars() {
     echo
-    echo "Entering provision_calendars function at $(date)"
+    echo "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     print_prompt
     read -r -p "Enter all calendar addresses without spaces or quotes, separated by commas (e.g. calendar1@domain.com,calendar2@domain.com):   " calendars_input
@@ -449,13 +479,13 @@ provision_calendars() {
         esac
     done
     echo
-    echo "Exiting provision_calendars function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
 update_marriage() {
     echo
-    echo "Entering update_marriage function at $(date)"
+    echo "Entering ${FUNCNAME[0]} function at $(date)"
     echo
     print_prompt
     read -r -p "First name: " new_fname
@@ -471,7 +501,7 @@ update_marriage() {
         print_error "$update_marriage_result"
     fi
     echo
-    echo "Exiting update_marriage function at $(date)"
+    echo "Exiting ${FUNCNAME[0]} function at $(date)"
     echo
 }
 
@@ -549,8 +579,8 @@ trap 'print_warning "Interrupted by user."; exit 0' INT
 trap 'print_error "Error on line ${LINENO}"; exit 1' ERR
 # trap 'print_info "Exiting ${0}"; exit' EXIT
 
-exec 1> >(tee -a "${LOG_FILE}")
-exec 2> >(tee -a "${ERR_LOG}" "${LOG_FILE}")
+# exec 1> >(tee -a "${LOG_FILE}")
+# exec 2> >(tee -a "${ERR_LOG}" "${LOG_FILE}")
 
 # -------------------------------
 # 4. Menu Setup
@@ -572,7 +602,7 @@ choices=(
 )
 
 # Set the prompt
-PS3="Please select one of the options: "
+PS3="Please select one of the options: \n "
 
 # -------------------------------
 # 5. Main Menu Function
