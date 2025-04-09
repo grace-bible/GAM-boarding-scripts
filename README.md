@@ -1,6 +1,6 @@
 # GAM Google Workspace User Management Scripts
 
-This repository offers Bash scripts that simplify user management in Google Workspace using the GAM and GAMADV-XTD3 command-line tool, automating tasks like onboarding, offboarding, and reporting for consistent and efficient administration.
+This repository offers Bash scripts that simplify user management in Google Workspace using the GAM and GAMADV-XTD3 command-line tool, automating tasks for efficient administration.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ This repository offers Bash scripts that simplify user management in Google Work
 - **Onboarding Script (`onboard.sh`)**:
   - Creates new user accounts.
   - Sets up email signatures and group memberships.
-  - Adds employment details and calendar events.
+  - Adds employment details and birthday events.
 
 - **Offboarding Script (`offboard.sh`)**:
   - Resets passwords and clears recovery options.
@@ -21,7 +21,7 @@ This repository offers Bash scripts that simplify user management in Google Work
   - Removes users from groups and hides them from the Global Address List (GAL).
 
 - **Reporting Script (`print.sh`)**:
-  - Generates comprehensive reports including:
+  - Generates comprehensive reports on:
     - Organizations
     - Users
     - Groups
@@ -34,8 +34,7 @@ This repository offers Bash scripts that simplify user management in Google Work
 ## Setup
 
 1. **Install Dependencies**:
-   Ensure that all required tools and dependencies are installed. This includes GAM and GAMADV-XTD3, which can be installed using the following commands:
-
+   Ensure that all required tools, including GAM and GAMADV-XTD3, are installed using:
    ```bash
    bash <(curl -s -S -L https://gam-shortn.appspot.com/gam-install)
    bash <(curl -s -S -L https://raw.githubusercontent.com/taers232c/GAMADV-XTD3/master/src/gam-install.sh)
@@ -56,13 +55,13 @@ This repository offers Bash scripts that simplify user management in Google Work
    # This is a configuration file for onboarding and offboarding scripts
 
    GAM=$HOME/bin/gam/gam
-   GAM3=$HOME/bin/gamadv-xtd3/gam
-   LOG_DIR=/path/to/logs
-   SIG_FILE=/path/to/signature/template
-   CC_HR=hiring.manager@company.com
-   BDAY_CAL=your_calendar_id@group.calendar.google.com
-   GAM_LAST_UPDATE="2000-01-01"
-   UPDATE_INTERVAL_DAYS=7
+  GAM3=$HOME/bin/gamadv-xtd3/gam
+  LOG_DIR=/path/to/logs
+  SIG_FILE=/path/to/signature/template
+  CC_HR=hiring.manager@company.com
+  BDAY_CAL=your_calendar_id@group.calendar.google.com
+  GAM_LAST_UPDATE="2000-01-01"
+  UPDATE_INTERVAL_DAYS=7
    ```
 
 ## Usage
